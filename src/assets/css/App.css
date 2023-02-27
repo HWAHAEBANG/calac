@@ -1,0 +1,51 @@
+/* css reset */
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+};
+body {
+  line-height: 1;
+};
+ol, ul {
+  list-style: none;
+};
+blockquote, q {
+  quotes: none;
+};
+blockquote:before, blockquote:after, q:before, q:after {
+  content: "";
+  content: none;
+};
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+};
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 400;
+  font-style: normal;
+};
+/* =============================================== */
+.active {
+  background-color: #fff;
+  color: #333 !important;
+  padding: 10px 0;
+  border-radius: 30px;
+};
+
+/* ckEditor ====================================== */
+div.ck.ck-reset.ck-editor.ck-rounded-corners {height: 285px !important;}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main {height: 200px;}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main > div > p {height: 200px;}
