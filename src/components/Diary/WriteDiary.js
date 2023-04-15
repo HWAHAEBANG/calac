@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import "../../assets/css/App.css";
 import { styled } from "@mui/material/styles";
 import { Box, Button, Modal, Fade, Typography, Backdrop, Divider, TextField, Hidden } from "@mui/material";
@@ -8,8 +8,10 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import axios from 'axios';
 import NoPermissionBlock from "../common/NoPermissionBlock";
 import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"; // 1. useSelector, useDispatch 가져오기
+import { getSession } from "../../redux/user/actions"; // 2. getSession 가져오기 
 
-const WriteDiary = ({ hasSidCookie }) => {
+const WriteDiary = () => {
   const [open, setOpen] = useState(false);
   const [allContent, setAllContent] = useState({
     title : '',
@@ -17,6 +19,13 @@ const WriteDiary = ({ hasSidCookie }) => {
   });
   const [uploadImg, setUploadImg] = useState('');
   const [flag, setFlag] = useState(false);
+  //=======================================================
+  const dispatch = useDispatch(); // 3. dispatch변수에 useDispatch() 함수 할당
+	// 4. 쿠키 여부 상태가 저장되는 변수임. boolean타입을 반환함
+  const hasSidCookie = useSelector((state) => state.hasSidCookie); 
+	// 5. 세션 객체가 저장되는 변수임. 객체타입 {success: true userInfo: {no: 1 ...}} 을 반환함.
+  const session = useSelector((state) => state.session); 
+  //=======================================================
   const imgLink = "http://localhost:5000/images/diary";
   // ckeditor img upload ==================================
   const customUploadAdapter = (loader) => {
@@ -80,6 +89,7 @@ const WriteDiary = ({ hasSidCookie }) => {
       alert('제목 또는 내용을 입력해주세요 !')
     } else {
       axios.post('http://localhost:5000/diary/insert', {
+        user_no : session.userInfo.no,
         title : allContent.title,
         content : allContent.content,
         image : uploadImg
@@ -92,6 +102,12 @@ const WriteDiary = ({ hasSidCookie }) => {
       })
     }
   }
+  //======================================================
+  useEffect(() => {
+    // 6. 세션 객체를 받아오는 함수 호출
+    // 꼭 useEffect 안에 있어야하는 것은 아닙니다. 하지만 대부분의 경우 이렇게 사용될 듯 합니다.
+      dispatch(getSession());
+    }, [hasSidCookie]); // <= 이건 빈칸[]으로 두어도 상관 없는 듯 합니다. 혹시몰라 넣었습니다.
   //======================================================
   return (
     <Box>
