@@ -20,23 +20,28 @@ router.post("/insert", (req, res) => {
   const end = req.body.end;
   const color = req.body.color;
   const locale = req.body.locale;
+  const user_no = req.body.user_no;
   const sqlQuery =
-    "INSERT INTO event_list(title,start,end,color,locale) VALUES(?,?,?,?,?);";
-  db.query(sqlQuery, [title, start, end, color, locale], (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      const newEvent = {
-        id: result.insertId, // Get the newly inserted id
-        title,
-        start,
-        end,
-        color,
-        locale,
-      };
-      res.send(newEvent);
+    "INSERT INTO event_list(title,start,end,color,locale,user_no) VALUES(?,?,?,?,?,?);";
+  db.query(
+    sqlQuery,
+    [title, start, end, color, locale, user_no],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const newEvent = {
+          id: result.insertId, // Get the newly inserted id
+          title,
+          start,
+          end,
+          color,
+          locale,
+        };
+        res.send(newEvent);
+      }
     }
-  });
+  );
 });
 //==============================================
 router.put("/update/:id", (req, res) => {
@@ -95,8 +100,10 @@ router.get("/category", (req, res) => {
 router.post("/category/insert", (req, res) => {
   const value = req.body.value;
   const label = req.body.label;
-  const sqlQuery = "INSERT INTO category_list(value,label) VALUES(?,?);";
-  db.query(sqlQuery, [value, label], (err, result) => {
+  const user_no = req.body.user_no;
+  const sqlQuery =
+    "INSERT INTO category_list(value,label,user_no) VALUES(?,?,?);";
+  db.query(sqlQuery, [value, label, user_no], (err, result) => {
     if (err) {
       console.log(err);
     } else {

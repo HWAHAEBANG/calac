@@ -8,6 +8,7 @@ import TopStateBar from "../common/TopBar";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { getSession } from "../../redux/user/actions";
+// import { useCookies } from "react-cookie";
 
 const DashboardSection = () => {
   const dispatch = useDispatch();
@@ -16,7 +17,13 @@ const DashboardSection = () => {
 
   useEffect(() => {
     dispatch(getSession());
-  }, [hasSidCookie]); // 없어도 될라나? 테스트 해
+  }, [hasSidCookie]);
+
+  // const [cookies, setCookie, removeCookie] = useCookies(["sid", "connect.sid"]);
+  // if (!session && hasSidCookie) {
+  //   removeCookie("sid", { path: "/" });
+  //   removeCookie("connect.sid", { path: "/" });
+  // }
 
   return (
     <SectionWrap container>

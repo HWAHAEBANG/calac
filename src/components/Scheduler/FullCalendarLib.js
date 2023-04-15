@@ -125,6 +125,7 @@ const DemoApp = () => {
 
   // 새 이벤트 저장 =============================================================
   function handleModalSubmit() {
+    if (!hasSidCookie || !session || !session.userInfo) return;
     const { title, start, end, color, locale } = newEvent;
     // Send POST request to server to add new event
     // 필수 입력사항 미입력시 경고.
@@ -140,6 +141,7 @@ const DemoApp = () => {
     }
 
     // 새 이벤트 DB에 INSERT ======================================================
+
     axios
       .post("http://localhost:5000/scheduler/insert", {
         // (주의) id값 전송안함. DB 저장시 바로 생성
@@ -148,9 +150,10 @@ const DemoApp = () => {
         end,
         color,
         locale,
+        user_no: session.userInfo.no,
       })
       .then((response) => {
-        alert("등록성공!");
+        alert("등록 완료!");
         // Add newly created event to calendar
         setCurrentEvents((currentEvents) => [
           // 성공시 UI에도 바로 반영
@@ -266,6 +269,7 @@ const DemoApp = () => {
             // allDay: false,
           },
         ]);
+        alert("수정 완료!");
       })
       .catch((error) => {
         console.error(error);
@@ -334,6 +338,7 @@ const DemoApp = () => {
             // allDay: false,
           },
         ]);
+        alert("수정 완료!");
       })
       .catch((error) => {
         console.error(error);
@@ -372,6 +377,7 @@ const DemoApp = () => {
             // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
           );
           setCurrentEvents(test);
+          alert("삭제 완료!");
         })
         .catch((error) => {
           console.error(error);
@@ -395,6 +401,7 @@ const DemoApp = () => {
   const [pickedAddColor, setPickedAddColor] = useState(""); // 추가할 카테고리의 최종 선택된 상테
   // 카테고리 추가 ==========================================================================
   const handleAddCategory = () => {
+    if (!hasSidCookie || !session || !session.userInfo) return;
     if (!categoryText) {
       alert("카테고리명을 입력해주세요.");
       return;
@@ -408,9 +415,10 @@ const DemoApp = () => {
       .post("http://localhost:5000/scheduler/category/insert", {
         value: pickedAddColor,
         label: categoryText,
+        user_no: session.userInfo.no,
       })
       .then((response) => {
-        alert("등록성공!");
+        alert("등록 완료!");
         // Add newly created event to calendar
         setCategoryList((prev) => [
           ...prev,
@@ -468,6 +476,7 @@ const DemoApp = () => {
             // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
           );
           setCurrentEvents(test);
+          alert("삭제 완료!");
         })
         .catch((error) => {
           console.error(error);
@@ -501,6 +510,7 @@ const DemoApp = () => {
             },
           ].sort((a, b) => a.id - b.id)
         );
+        alert("수정 완료!");
       })
       .catch((error) => {
         console.error(error);
@@ -701,7 +711,7 @@ const DemoApp = () => {
         />
         {/*========================================================== */}
       </div>
-      {/* <AlertControl alertEvents={alertEvents} /> */}
+      <AlertControl alertEvents={alertEvents} />
     </Box>
   );
 };

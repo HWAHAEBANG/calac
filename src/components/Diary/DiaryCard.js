@@ -11,7 +11,7 @@ import DiaryModify from './DiaryModify';
 import NoPermissionBlock from "../common/NoPermissionBlock";
 import { connect } from "react-redux";
 import { useSelector, useDispatch } from "react-redux"; // 1. useSelector, useDispatch 가져오기
-import { getSession } from "../../redux/user/actions"; // 2. getSession 가져오기
+import { getSession } from "../../redux/user/actions"; // 2. getSession 가져오기 
 
 const DiaryCard = () => {
   const [openMoreButton, setOpenMoreButton] = useState(false);

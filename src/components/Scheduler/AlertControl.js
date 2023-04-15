@@ -16,7 +16,7 @@ import OutputIcon from "@mui/icons-material/Output";
 
 export default function AlertControl({ alertEvents }) {
   const actions = [
-    { icon: <AlarmIcon />, name: "알림", value: "alert" },
+    // { icon: <AlarmIcon />, name: "알림", value: "alert" },
     { icon: <QuestionMarkIcon />, name: "도움말", value: "help" },
   ];
 
@@ -114,8 +114,8 @@ export default function AlertControl({ alertEvents }) {
       </Box>
       <SpeedDial
         ariaLabel='Add count'
-        sx={{ position: "fixed", bottom: 16, right: 16 }}
-        icon={<SpeedDialIcon openIcon={<ArrowUpwardIcon />} />}
+        sx={{ position: "fixed", bottom: 16, right: 16, zIndex: 50 }}
+        icon={<QuestionMarkIcon openIcon={<ArrowUpwardIcon />} />}
       >
         {actions.map((action) => (
           <SpeedDialAction

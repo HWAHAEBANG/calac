@@ -8,6 +8,7 @@ export const setHasSidCookie = (hasSidCookie) => ({
 
 // 세션객체를 받아오는 액션
 export const getSession = () => (dispatch) => {
+  if (!getCookie("sid")) return;
   axios
     .get("http://localhost:5000/users/user-info", {
       // 브라우저에 저장되어있는 쿠키를 참조해서 권한 획득
