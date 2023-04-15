@@ -1,8 +1,12 @@
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
 import sidCookieReducer from "./user/reducer";
-import { setHasSidCookie } from "./user/actions";
+import { setHasSidCookie, getSession } from "./user/actions";
 
-const store = createStore(sidCookieReducer);
+const store = createStore(sidCookieReducer, applyMiddleware(thunk));
+
+// 초기 상태 설정 시 세션객체를 받아오는 함수 호출
+store.dispatch(getSession());
 
 const checkSidCookie = () => {
   // 브라우저에 저장된 쿠키를 받아오는 함수

@@ -8,22 +8,55 @@ const LedgerGraphChart = () => {
   const [monthlyData, setMonthlyData] = useState([]);
   //======================================================
   useEffect(() => {
-    axios.get('http://localhost:5000/ledger/monthly/data')
+    axios.get('http://localhost:5000/ledger/monthly/category')
     .then((res) => {
-      console.log('teettt', res.data)
+      console.log('123', res.data)
       setMonthlyData(res.data);
     })
   }, []);
   //======================================================
-  const result = monthlyData.reduce((a, b) => {
-    const categoryIndex = a.findIndex(item => item.name === b.ledger_category);
-    if (categoryIndex === -1) {
-      a.push({name: b.ledger_category, data: [b.monthly_sum_count]});
-    } else {
-      a[categoryIndex].data.push(b.monthly_sum_count);
+  // const result = monthlyData.reduce((a, b) => {
+  //   const categoryIndex = a.findIndex(item => item.name === b.ledger_category);
+  //   if (categoryIndex === -1) {
+  //     a.push({name: b.ledger_category, data: [b.monthly_sum_count]});
+  //   } else {
+  //     a[categoryIndex].data.push(b.monthly_sum_count);
+  //   }
+  //   return a;
+  // }, []);
+  // console.log('456', result)
+  const outputArray = [];
+
+  // 카테고리별로 데이터 묶기
+  const groupedByCategory = monthlyData.reduce((acc, item) => {
+    if (!acc[item.ledger_category]) {
+      acc[item.ledger_category] = [];
     }
-    return a;
-  }, []);
+    acc[item.ledger_category].push(item);
+    return acc;
+  }, {});
+
+  // 각 카테고리 데이터를 월별로 묶어 합계 계산
+  Object.keys(groupedByCategory).forEach((category) => {
+    const data = groupedByCategory[category].reduce((acc, item) => {
+      const dateIndex = acc.date.indexOf(item.current_month);
+      if (dateIndex === -1) {
+        acc.date.push(item.current_month);
+        acc.data.push(item.monthly_sum_count);
+      } else {
+        acc.data[dateIndex] += item.monthly_sum_count;
+      }
+      return acc;
+    }, { data: [], date: [] });
+    outputArray.push({ name: category, data: data.data, date: data.date });
+  });
+  console.log('dddddddddd', outputArray)
+  //======================================================
+  outputArray.map(list => {
+    return(
+      console.log(list.date)
+    )
+  })
   //======================================================
   let today = new Date();
   let year = today.getFullYear();
@@ -65,7 +98,7 @@ const LedgerGraphChart = () => {
     <ChartWrap>
       <ApexCharts
         options={monthlyState.options}
-        series={result}
+        series={outputArray}
         typs='line'
         width={'100%'}
         height={'100%'}
@@ -79,7 +112,8 @@ const ChartWrap = styled(Box)({
   border:'1px solid #ddd',
   borderRadius:'10px',
   padding:'10px',
-  height:'450px'
+  height:'450px',
+  borderRadius:'10px'
 });
 //======================================================
 export default LedgerGraphChart;

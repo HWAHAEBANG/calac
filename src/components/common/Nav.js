@@ -9,12 +9,12 @@ import {
   Typography,
 } from "@mui/material";
 import "../../assets/css/App.css";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import JoinRightRoundedIcon from "@mui/icons-material/JoinRightRounded";
-import { connect } from "react-redux";
 import { useCookies } from "react-cookie";
-
-const Nav = ({ hasSidCookie }) => {
+import { useSelector } from "react-redux";
+const Nav = () => {
+  const hasSidCookie = useSelector((state) => state.hasSidCookie);
   //=================================================================================
   const [btnActive, setBtnActive] = useState("");
   //=================================================================================
@@ -142,13 +142,15 @@ const Nav = ({ hasSidCookie }) => {
         <nav>
           {hasSidCookie ? (
             <List>
-              <ListItem onClick={handleLogout}>
-                <TitleColor
-                  primary='Logout'
-                  disableTypography
-                  sx={{ fontSize: "30px", cursor: "pointer" }}
-                />
-              </ListItem>
+              <Link to='/'>
+                <ListItem onClick={handleLogout}>
+                  <TitleColor
+                    primary='Logout'
+                    disableTypography
+                    sx={{ fontSize: "30px", cursor: "pointer" }}
+                  />
+                </ListItem>
+              </Link>
             </List>
           ) : (
             <List>
@@ -210,8 +212,4 @@ const CommonListItem = styled(ListItem)({
 //   return <Nav>StyledComponents</Nav>;
 // }
 
-const mapStateToProps = (state) => ({
-  hasSidCookie: state.hasSidCookie,
-});
-
-export default connect(mapStateToProps)(Nav);
+export default Nav;

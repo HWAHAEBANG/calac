@@ -35,9 +35,11 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,ha
         diary_no : id,
         comment : newComment.comment
       })
-      .then(()=>alert('댓글이 등록되었습니다 :)'))
+      .then(()=>{
+        alert('댓글이 등록되었습니다 :)')
+        setNewComment({comment:''})
+      })
       .catch(err=>console.log("err",err))
-      setNewComment({comment:''})
     } else {
       alert('댓글을 입력해주세요 :(');
     }

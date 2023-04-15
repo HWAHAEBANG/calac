@@ -1,7 +1,8 @@
-import { SET_HAS_SID_COOKIE } from "./types";
+import { SET_HAS_SID_COOKIE, SET_SESSION } from "./types";
 
 const initialState = {
   hasSidCookie: false,
+  session: null,
 };
 
 const sidCookieReducer = (state = initialState, action) => {
@@ -10,6 +11,11 @@ const sidCookieReducer = (state = initialState, action) => {
       return {
         ...state,
         hasSidCookie: action.payload,
+      };
+    case SET_SESSION:
+      return {
+        ...state,
+        session: action.payload,
       };
     default:
       return state;

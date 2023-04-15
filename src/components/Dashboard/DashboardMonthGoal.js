@@ -1,16 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import { Typography, Box, ListItem, IconButton, ListItemButton, ListItemText, ListItemIcon, Checkbox } from "@mui/material";
+import { Typography, Box, FormGroup, Checkbox, FormControlLabel } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from 'axios';
-import CommentIcon from "@mui/icons-material/Comment";
 
 const DashboardMonthGoal = () => {
-  const [checked, setChecked] = useState([0]);
+  //======================================================
+  // const [checked, setChecked] = useState([0]);
   const [goalList, setGoalList] = useState(false);
-  
-  const handleToggle = (list) => {
+  const [num,setNum] = useState('');
+  //======================================================
+  const handleCkeck = (idx) => {
+    console.log('ddd', idx)
+    setNum(idx);
   };
-
+  //======================================================
   useEffect(() => {
     axios.get('http://localhost:5000/dashboard/goal')
     .then((res) => {
@@ -18,7 +21,7 @@ const DashboardMonthGoal = () => {
       setGoalList(res.data);
     })
   }, []);
-
+  //======================================================
   return (
   <MonthGoalWrap>
     <Typography
@@ -28,42 +31,18 @@ const DashboardMonthGoal = () => {
     >
       이번달 목표
     </Typography>
-      {
-        goalList && goalList.map((list) => {
-          return(
-            <ListItem
-            key={list.goal_no}
-            secondaryAction={
-              <IconButton edge='end' aria-label='comments'>
-                <CommentIcon />
-              </IconButton>
-            }
-            disablePadding
-            >
-              <ListItemButton
-              role={undefined}
-              dense
-              onClick={handleToggle(list)}
-              >
-                <ListItemIcon>
-                    <Checkbox
-                      edge='start'
-                      // checked = {checked}
-                      tabIndex={-1}
-                      disableRipple
-                      // inputProps={{ "aria-labelledby": list.goal_no }}
-                    />
-                </ListItemIcon>
-                <ListItemText
-                  id={list.goal_no}
-                  primary={list.goal_title}
-                  sx={{ marginLeft: "-20px" }}
-                />
-              </ListItemButton>
-            </ListItem>
-          )
-        })
-      }
+    <FormGroup>
+      {goalList && goalList.map((list) =>(
+        <FormControlLabel 
+          key={list.goal_no}
+          control={
+            <Checkbox value={list.goal_achieve}/>
+          }
+          label={list.goal_title}
+          onClick={()=>handleCkeck(list.goal_no)}/>
+      )
+      )}
+    </FormGroup>
   </MonthGoalWrap>
   );
 };

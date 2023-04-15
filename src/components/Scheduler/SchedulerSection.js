@@ -1,11 +1,11 @@
 import { Box } from "@mui/system";
 import React from "react";
 import FullCalendarLib from "./FullCalendarLib";
-import styled from "@emotion/styled";
 import NoPermissionBlock from "../common/NoPermissionBlock";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
-const SchedulerSection = ({ hasSidCookie }) => {
+const SchedulerSection = () => {
+  const hasSidCookie = useSelector((state) => state.hasSidCookie);
   return (
     <Box height='100vh' padding={5} position='relative'>
       {hasSidCookie ? (
@@ -21,10 +21,4 @@ const SchedulerSection = ({ hasSidCookie }) => {
   );
 };
 
-// 리덕스 =================================================
-const mapStateToProps = (state) => ({
-  hasSidCookie: state.hasSidCookie,
-});
-// ========================================================
-
-export default connect(mapStateToProps)(SchedulerSection);
+export default SchedulerSection;

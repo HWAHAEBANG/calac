@@ -17,6 +17,8 @@ import EventViewModal from "./EventViewModal";
 import EventAddModal from "./EventAddModal";
 import EventRender from "./EventRender";
 import AlertControl from "./AlertControl";
+import { useDispatch, useSelector } from "react-redux";
+import { getSession } from "../../redux/user/actions";
 
 const DemoApp = () => {
   // 상태관리 변수 ===============================================================================
@@ -25,15 +27,31 @@ const DemoApp = () => {
   const [currentCategory, setCurrentCategory] = useState(""); // 현재 선택된 카테고리
   const [colorPickerVisible, setColorPickerVisible] = useState([]); // 컬리픽커 보이기 토글 (수정용)
   const [alertEvents, setAlertEvents] = useState([]); // 알림이 설정되어 있는 이벤트들
+  // 리덕스 =====================================================================================
+  const dispatch = useDispatch();
+  const hasSidCookie = useSelector((state) => state.hasSidCookie);
+  const session = useSelector((state) => state.session);
+  // ===========================================================================================
   // [데이터 불러오기] #################################################################################
   console.log("카테고리", categoryList);
   console.log("이벤트", currentEvents);
+  console.log("쿠키", hasSidCookie);
+  console.log("세션", session);
+  // 경고! 로그아웃해도 세션정보 남아있는 이슈 해결 요망
+
+  useEffect(() => {
+    // 세션 객체를 받아오는 함수 호출
+    dispatch(getSession());
+  }, [hasSidCookie]);
+
   // 카테고리 목록을 불러옴.
   useEffect(() => {
+    if (!hasSidCookie || !session || !session.userInfo) return; // 세션 이슈 해결하면 session으로 해도 될듯
     axios
-      .get("http://localhost:5000/scheduler/category")
+      .get(
+        `http://localhost:5000/scheduler/category?currentUserNo=${session.userInfo.no}`
+      )
       .then((response) => {
-        console.log("캌퉤고리", response.data);
         setCategoryList(response.data);
         setCurrentCategory(response.data[0].value); // ok
         setColorPickerVisible(response.data.slice(1).map(() => false));
@@ -41,15 +59,18 @@ const DemoApp = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [hasSidCookie]); // 세션 이슈 해결하면 session으로 해도 될듯
 
   //이벤트 목록을 불러옴.
   useEffect(() => {
+    if (!hasSidCookie || !session || !session.userInfo) return;
     axios
-      .get("http://localhost:5000/scheduler", { withCredentials: true })
+      .get(
+        `http://localhost:5000/scheduler?currentUserNo=${session.userInfo.no}`,
+        { withCredentials: true }
+      )
       .then((response) => {
         // 알람이 설정된 이벤트들만 골라내기.
-        console.log("test", response.data);
         const alertEvent = response.data; // 추후 filter돌릴 예정
         setAlertEvents(alertEvent);
         // 현재 카테고리와 일치하는 이벤트들만 골라내기.
@@ -191,8 +212,6 @@ const DemoApp = () => {
       (category) => category.value === clickInfo.event.backgroundColor
     );
 
-    console.log("맞을텐데", parsingCategory);
-
     setDetailLocation({
       // 클릭한 부분의 좌표를 저장
       x: clickInfo.jsEvent.clientX,
@@ -263,7 +282,6 @@ const DemoApp = () => {
 
   // 입력되는 모든 변경사항 즉시 상태 관리 ============================================
   function handleEditChange(event) {
-    // console.log(event);
     setUpdatedEvent({
       ...updatedEvent,
       [event.target.name]: event.target.value,
@@ -353,7 +371,6 @@ const DemoApp = () => {
             (item) => item.id !== parseInt(updatedEvent.id)
             // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
           );
-          // console.log("또 비동기냐 설마", test);
           setCurrentEvents(test);
         })
         .catch((error) => {
@@ -393,7 +410,6 @@ const DemoApp = () => {
         label: categoryText,
       })
       .then((response) => {
-        // console.log("잠시 검문있겠슙니다", response);
         alert("등록성공!");
         // Add newly created event to calendar
         setCategoryList((prev) => [

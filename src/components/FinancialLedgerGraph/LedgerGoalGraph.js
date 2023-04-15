@@ -13,41 +13,37 @@ const LedgerGoalGraph = () => {
   const [moneyNo, setMoneyNo] = useState(false);
   const [created, setCreated] = useState(false);
   const [updated, setUpdated] = useState(false);
-  const [money, setMoney] = useState(false);
+  const [money, setMoney] = useState(0);
   const [changeGoalMoney, setChangeGoalMoney] = useState(false);
   const [totalCountData, setTotalCountData] = useState(false);
-  //======================================================
-  const hadleGoalMoney = (e) => {
-    const goalMoneyValue = e.target.value;
-    console.log('goal', goalMoneyValue)
-  }
+  const [noData, setNoData] = useState(false);
   //======================================================
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/goal')
     .then((res) => {
-      setMonthlyGoalData(res.data[0]);
-      setMoneyNo(res.data[0]['money_no']);
-      setMoney(res.data[0]['money_count']);
-      setCreated(res.data[0]['money_createdAt']);
-      setUpdated(res.data[0]['money_updatedAt']);
+      if (res.data.length === 0 ) {
+        setNoData(true)
+        setMonthlyGoalData(0);
+        setMoney(0)
+      } else {
+        setMonthlyGoalData(res.data[0]);
+        setMoneyNo(res.data[0]['money_no']);
+        setMoney(res.data[0]['money_count']);
+        setCreated(res.data[0]['money_createdAt']);
+        setUpdated(res.data[0]['money_updatedAt']);
+      }
     })
-  }, [money]);
+  }, [money, open]);
   //======================================================
   const type = 'expense'
   useEffect(() => {
-    axios.get(`http://localhost:5000/ledger/total?type=${type}`)
+    axios.get(`http://localhost:5000/ledger/monthly/total?type=${type}`)
     .then((res) => {
-      res.data[0][0] !== {} ? (
-        setTotalCountData(res.data[0][0]['sum_count'])
-      ) : (
-        setTotalCountData(0)
-      );
+      res.data.length !== 0 && setTotalCountData(res.data[0]['sum_count'])
     })
   }, []);
   //======================================================
-  const hadleChangeGoalMoney = (e) => {
-    setChangeGoalMoney(e.target.value);
-  };
+  const hadleChangeGoalMoney = (e) => { setChangeGoalMoney(e.target.value); };
   //======================================================
   // + 버튼 : 모달창 열림
   const handleClick = () => { setOpen(true) }
@@ -58,6 +54,13 @@ const LedgerGoalGraph = () => {
     setOpenInput(false);
   }
   //======================================================
+  // 모달창 취소버튼
+  // const handleCancel = () => {
+  //   setOpenInput(false);
+  //   setMoney(money)
+  //   // setMoney(res.data[0]['money_count']);
+  // }
+  //======================================================
   // 모달창 저장버튼
   const handleSave = () => {
     setOpen(false);
@@ -66,8 +69,14 @@ const LedgerGoalGraph = () => {
       no : moneyNo
     })
   }
-  const change_money = money.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   const goalPercent = Math.round(totalCountData/money*100)
+  //======================================================
+  const handleSaveMoney = () => {
+    setOpen(false);
+    axios.post('http://localhost:5000/ledger/goal/insert', {
+      count : changeGoalMoney
+    })
+  }
   //======================================================
   let today = new Date();
   let year = today.getFullYear();
@@ -101,7 +110,26 @@ const LedgerGoalGraph = () => {
         },
       },
       colors:['#3ed65d'],
-      labels: [`예산 : ${change_money}`],
+      labels: [`예산 : ${money.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`],
+    },
+  };
+  //=====================================================
+  const noState = {
+    series: [0],
+    options: {
+      chart: {
+        height: 350,
+        type: 'radialBar',
+      },
+      plotOptions: {
+        radialBar: {
+          hollow: {
+            size: '70%',
+          }
+        },
+      },
+      colors:['#3ed65d'],
+      labels: [`설정된 값이 없습니다.`],
     },
   };
   //======================================================
@@ -113,85 +141,111 @@ const LedgerGoalGraph = () => {
         </IconButton>
         <ChartTopText>지출 목표액 달성율</ChartTopText>
       </ChartTopTextBox>
-      <ApexCharts
-        options={state.options}
-        series={state.series}
-        type="radialBar"
-        height="300px"
-        width="100%"
-      />
+      {noData ? (
+        <ApexCharts
+          options={noState.options}
+          series={noState.series}
+          type="radialBar"
+          height="300px"
+          width="100%"
+        />
+      ) : (
+        <ApexCharts
+          options={state.options}
+          series={state.series}
+          type="radialBar"
+          height="300px"
+          width="100%"
+        />
+      )}
 
       {/* modal */}
       <Modal
         open={open}
         onClose={handleClose}
       >
-      <Box sx={style}>
-        <ModalTitle>
-          {currentMonth} 목표 지출액
-          <CloseIcon onClick={handleClose}/>
-        </ModalTitle>
-        {monthlyGoalData !== undefined ? (
-          <Box>
-            {!openInput ? (
-              <TextField
-                id="outlined-read-only-input"
-                defaultValue={money}
-                InputProps={{
-                  readOnly: true,
-                }}
-                sx={{marginBottom:'10px'}}
-              />
-            ) : (
-              <TextField
-                required
-                id="outlined-required"
-                label="수정가능합니다."
-                defaultValue={money}
-                autoFocus={true}
-                sx={{marginBottom:'10px'}}
-                onChange={hadleChangeGoalMoney}
-              />
-            )}
-            {created === updated ? (
-              <Typography>
-                마지막 수정일 : {(created || "").split("T")[0]}
-              </Typography>
-            ) : (
-              <Typography>
-                마지막 수정일 : {(updated || "").split("T")[0]}
-              </Typography>
-            )}
-          </Box>
-        ) : (
-          <Typography sx={{marginBottom:'10px'}}>
-            현재 목표액을 설정하지않았습니다.
-          </Typography>
-        )}
-        <ClickBtnBox>
-          {!openInput ? (
-            <ClickBtn 
-            variant="contained"
-            onClick={() => {setOpenInput(true)}}
-            >
-              수정
-            </ClickBtn>
+        <Box sx={style}>
+          <ModalTitle>
+            {currentMonth} 목표 지출액
+            <CloseIcon onClick={handleClose}/>
+          </ModalTitle>
+          {monthlyGoalData !== undefined ? (
+            <Box>
+              {!openInput ? (
+                <TextField
+                  id="outlined-read-only-input"
+                  defaultValue={money}
+                  InputProps={{ readOnly: true }}
+                  sx={{marginBottom:'10px'}}
+                />
+              ) : (
+                <TextField
+                  required
+                  id="outlined-required"
+                  label="수정가능합니다."
+                  defaultValue={money}
+                  autoFocus={true}
+                  sx={{marginBottom:'10px'}}
+                  onChange={hadleChangeGoalMoney}
+                />
+              )}
+              {created === updated ? (
+                <Typography>
+                  작성일 : {(created || "").split("T")[0]}
+                </Typography>
+              ) : (
+                <Typography>
+                  마지막 수정일 : {(updated || "").split("T")[0]}
+                </Typography>
+              )}
+            </Box>
           ) : (
-            <ClickBtn 
+            <Typography sx={{marginBottom:'10px'}}>
+              현재 목표액을 설정하지않았습니다.
+            </Typography>
+          )}
+          <ClickBtnBox>
+            {!openInput ? (
+              <ClickBtn 
               variant="contained"
-              onClick={() => {setOpenInput(false)}}
-            >
-              취소
-            </ClickBtn>
-          ) }
-          <ClickBtn
-            variant="contained"
-            onClick={() => {handleSave()}}
-          >
-            저장
-          </ClickBtn>
-        </ClickBtnBox>
-      </Box>
+              onClick={() => {setOpenInput(true)}}
+              >
+                수정
+              </ClickBtn>
+            ) : (
+              <ClickBtn 
+                variant="contained"
+                onClick={() => {setOpenInput(false)}}
+              >
+                취소
+              </ClickBtn>
+            ) }
+            {noData && (
+              <ClickBtn
+              variant="contained"
+              onClick={() => {handleSaveMoney()}}
+              >
+              새로 입력
+              </ClickBtn>
+            )}
+            {!noData && !openInput && (
+              <ClickBtn
+              variant="contained"
+              onClick={() => {setOpen(false);}}
+              >
+              닫기
+              </ClickBtn>
+            )}
+            {openInput && (
+              <ClickBtn
+                variant="contained"
+                onClick={() => {handleSave()}}
+              >
+                저장
+              </ClickBtn>
+            )}
+          </ClickBtnBox>
+        </Box>
       </Modal>
     </ChartWrap>
   );
@@ -201,8 +255,8 @@ const ChartWrap = styled(Box)({
   position:'relative',
   width:'30%',
   border:'1px solid #ddd',
-  borderRadius:'10px',
-  position:'relative'
+  position:'relative',
+  borderRadius:'10px'
 });
 const ChartTopTextBox = styled(Box)({
   height:'50px',

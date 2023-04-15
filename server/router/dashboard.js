@@ -15,7 +15,7 @@ connectDB.open(db);
 
 // dashboard page의 goal data
 router.get('/goal', (req, res) => {
-  const selectQuery = "select * from goal WHERE goal_type='List'"
+  const selectQuery = "select * from goal"
   db.query(selectQuery, (err, result) => {
     res.send(result);
     console.log('result', result);

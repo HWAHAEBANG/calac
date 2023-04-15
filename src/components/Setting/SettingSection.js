@@ -2,10 +2,11 @@ import React from "react";
 import ChangeUserInfo from "./ChangeUserInfo";
 import { Box } from "@mui/material";
 import { styled } from "@mui/system";
-import { connect } from "react-redux";
 import NoPermissionBlock from "../common/NoPermissionBlock";
+import { useSelector } from "react-redux";
 
-const Setting = ({ hasSidCookie }) => {
+const Setting = () => {
+  const hasSidCookie = useSelector((state) => state.hasSidCookie);
   return (
     <FindWrap>
       {hasSidCookie ? (
@@ -27,9 +28,4 @@ const FindWrap = styled(Box)({
   position: "relative",
 });
 //======================================================
-// 리덕스 =================================================
-const mapStateToProps = (state) => ({
-  hasSidCookie: state.hasSidCookie,
-});
-// ========================================================
-export default connect(mapStateToProps)(Setting);
+export default Setting;

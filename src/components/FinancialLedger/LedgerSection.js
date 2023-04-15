@@ -8,9 +8,10 @@ import LedgerGraphSection from "../FinancialLedgerGraph/LedgerGraphSection";
 import OpenModalBtn from "../common/OpenModalBtn";
 import LedgerMonthlyGraph from "../FinancialLedgerGraph/LedgerMonthlyGraph";
 import NoPermissionBlock from "../common/NoPermissionBlock";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
-const FinancialLedger = ({ hasSidCookie }) => {
+const FinancialLedger = () => {
+  const hasSidCookie = useSelector((state) => state.hasSidCookie);
   return (
     <LedgerWrap>
       {hasSidCookie ? (
@@ -62,9 +63,4 @@ const LedgerBox = styled(Box)({
   margin: "50px 0",
 });
 //======================================================
-// 리덕스 =================================================
-const mapStateToProps = (state) => ({
-  hasSidCookie: state.hasSidCookie,
-});
-// ========================================================
-export default connect(mapStateToProps)(FinancialLedger);
+export default FinancialLedger;

@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useRef} from 'react';
 import { styled } from "@mui/material/styles";
 import { Box, List, ListItem, ListItemButton, ListItemText, Card, CardHeader, IconButton, CardMedia, CardContent, Typography, Button, Modal, Fade, Backdrop, Divider, TextField } from "@mui/material";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -10,8 +10,10 @@ import ReactHtmlParser from "react-html-parser";
 import DiaryModify from './DiaryModify';
 import NoPermissionBlock from "../common/NoPermissionBlock";
 import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"; // 1. useSelector, useDispatch 가져오기
+import { getSession } from "../../redux/user/actions"; // 2. getSession 가져오기
 
-const DiaryCard = ({hasSidCookie}) => {
+const DiaryCard = () => {
   const [openMoreButton, setOpenMoreButton] = useState(false);
   const [isModify, setIsModify] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -24,10 +26,21 @@ const DiaryCard = ({hasSidCookie}) => {
   const [posts, setPosts] = useState([]);
   const [commentCnt, setCommentCnt] = useState([]);
   //======================================================
+  const dispatch = useDispatch(); // 3. dispatch변수에 useDispatch() 함수 할당
+	// 4. 쿠키 여부 상태가 저장되는 변수임. boolean타입을 반환함
+  const hasSidCookie = useSelector((state) => state.hasSidCookie); 
+	// 5. 세션 객체가 저장되는 변수임. 객체타입 {success: true userInfo: {no: 1 ...}} 을 반환함.
+  const session = useSelector((state) => state.session); 
+  //======================================================
   const handleOpenMoreButton = (e,idx) => {
-    setCountIndex(idx);
-    setOpenMoreButton(!openMoreButton);
-  }
+    if(session !== null) {
+      setCountIndex(idx);
+      setOpenMoreButton(!openMoreButton);
+      // setOpen(true);
+    } else {
+      alert("본인만 이용 가능합니다 :)")
+    }
+  };
   //======================================================
   const openDetailModal = (id,title,content,image,createdAt) => {
     setIsDetailOpen(true);
@@ -47,11 +60,19 @@ const DiaryCard = ({hasSidCookie}) => {
   //======================================================
   let offset = 0;
   const loadDiary = () => {
-    axios.get(`http://localhost:5000/diary?limit=10&offset=${offset}`)
-    .then(res=>{
-      setPosts(oldPosts => [...oldPosts, ...res.data]);
-    });
-    offset += 10;
+    if(session !== null){
+      axios.post(`http://localhost:5000/diary?limit=10&offset=${offset}`,{user_no : session.userInfo.no})
+      .then(res=>{
+        setPosts(oldPosts => [...oldPosts, ...res.data]);
+        offset += 10;
+      });
+    } else {
+      axios.post(`http://localhost:5000/diary?limit=10&offset=${offset}`)
+      .then(res=>{
+        setPosts(oldPosts => [...oldPosts, ...res.data]);
+        offset += 10;
+      });
+    }
   }
   //======================================================
   const handleScroll = (e) => {
@@ -84,6 +105,12 @@ const DiaryCard = ({hasSidCookie}) => {
     let listRange = document.getElementById("postList");
     listRange.addEventListener("scroll", handleScroll);
   },[])
+  //======================================================
+  useEffect(() => {
+    // 6. 세션 객체를 받아오는 함수 호출
+    // 꼭 useEffect 안에 있어야하는 것은 아닙니다. 하지만 대부분의 경우 이렇게 사용될 듯 합니다.
+      dispatch(getSession());
+    }, [hasSidCookie]); // <= 이건 빈칸[]으로 두어도 상관 없는 듯 합니다. 혹시몰라 넣었습니다.
   //======================================================
   return (
     <CardBox>

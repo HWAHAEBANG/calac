@@ -8,20 +8,22 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import DiaryModify from './DiaryModify';
 
-const DiaryMoreButton = ({posts,id,openMoreButton,setOpenMoreButton}) => {
+const DiaryMoreButton = ({posts, id, open}) => {
   //======================================================
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = (id) => {
-    console.log(id)
-    // if(window.confirm(`게시글을 수정하시겠습니까??`) === true){
-    //   setOpen(true);
-    // }
-    setOpen(true)
-    setOpenMoreButton(!openMoreButton)
+  const [modalOpen, setModalOpen] = useState(false);
+  const [clickId, setClickId] = useState(false);
+  //======================================================
+  const handleClickOpen = (e) => {
+    setClickId(e)
+    setModalOpen(true);
+    console.log('2', clickId)
+    console.log('5', modalOpen)
+    console.log('6', e)
   };
-
+  console.log('4', id)
+  console.log('7', modalOpen)
+  console.log('3', clickId)
   const handleClose = () => {
-    setOpen(false);
   };
   //======================================================
   const onDelete = (id) => {
@@ -35,10 +37,10 @@ const DiaryMoreButton = ({posts,id,openMoreButton,setOpenMoreButton}) => {
     }
   }
   //======================================================
-  useEffect(()=>{
-    console.log("open",open)
-    console.log("openMoreButton",openMoreButton)
-  },[])
+  // useEffect(()=>{
+  //   console.log("open",open)
+  //   console.log("openMoreButton",openMoreButton)
+  // },[])
   //======================================================
   return (
     <TabBox>
@@ -58,53 +60,7 @@ const DiaryMoreButton = ({posts,id,openMoreButton,setOpenMoreButton}) => {
       </List>
 
       {open && (
-
-      
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-      >
-        <ModalBox>
-          <TitleTypography>Write Diary</TitleTypography>
-          <Divider/>
-          <TitleBox>
-            <TextField
-              id="standard success" 
-              color="success"
-              variant="standard" 
-              fullWidth 
-              label="제목" 
-              multiline 
-              name="title"
-            />
-          </TitleBox>
-
-          <EditorBox>
-            <CKEditor
-              style={{paddingTop:'20px'}}
-              editor={ClassicEditor}
-              config={{
-                placeholder: "내용을 입력하세요 :)",
-              }}
-              onReady={editor=>{
-                // console.log('Editor is ready to use!', editor);
-              }}
-              onBlur={(event, editor) => {
-                  // console.log('Blur.', editor);
-              }}
-              onFocus={(event, editor) => {
-                  // console.log('Focus.', editor);
-              }}
-            />
-          </EditorBox>
-
-          <BtnBox>
-            <SubmitButton fullWidth variant="outlined">Submit</SubmitButton>
-          </BtnBox>
-        </ModalBox>
-      </Modal>
+        <DiaryModify isModifyOpen={modalOpen}/>
       )}
     </TabBox>
   )

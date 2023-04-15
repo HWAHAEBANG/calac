@@ -10,9 +10,9 @@ const FinalncialLedgerDonut = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger')
     .then((res) => {
-      setMonthlyDountData(res.data[0]);
+      setMonthlyDountData(res.data);
     })
-  }, []);
+  }, [monthlyDonutData]);
   //=====================================================
   return (
     <DountWrap className="donut">
@@ -20,7 +20,6 @@ const FinalncialLedgerDonut = () => {
         <DountTitle>이번달 지출 현황</DountTitle>
         {monthlyDonutData.length !== 0 ? (
           <Box style={{ width: '100%', height: '90%', margin: '0 auto'}}>
-          {/* nivo로 만든 도넛차트 */}
           <ResponsivePie
             data = {
               monthlyDonutData && monthlyDonutData.map((data) => (
@@ -82,7 +81,6 @@ const FinalncialLedgerDonut = () => {
                 spacing: 10
               }
             ]}
-            // fill을 통해 표 안에 디자인 줄 수 있음.
             fill={[
               {
                 match: {
@@ -108,7 +106,7 @@ const FinalncialLedgerDonut = () => {
                 anchor: 'right',
                 direction: 'column',
                 justify: false,
-                translateX: 10,        // 우측 리스트 목록 (화면 사이즈보고 조절하면 될 듯)
+                translateX: 10,
                 translateY: 0,
                 itemWidth: 100,
                 itemHeight: 40,
@@ -136,8 +134,8 @@ const DountWrap = styled(Box)({
   position:'relative',
   border:'1px solid #ddd',
   padding:'5px',
-  borderRadius:'10px',
-  height:'450px'
+  height:'450px',
+  borderRadius:'10px'
 });
 const DountGraph = styled(Box)({
   width:'100%',
@@ -145,13 +143,6 @@ const DountGraph = styled(Box)({
 });
 const DountTitle = styled(Typography)({
   marginBottom:'20px'
-})
-// const NextBtn = styled(Button)({
-//   color:'#07553B',
-//   position:'absolute',
-//   bottom:'5%',
-//   right:'5%',
-//   fontSize:'20px'
-// });
+});
 //======================================================
 export default FinalncialLedgerDonut;

@@ -9,16 +9,26 @@ const connectDB = require('../config/connectDB.js');
 const db = connectDB.init();
 connectDB.open(db);
 //==============================================
-router.get('/',(req,res) => {
+router.post('/',(req,res) => {
   const limit = req.query.limit;
   const offset = req.query.offset;
+  const user_no = req.body.user_no
   let selectQuery = '';
   if(limit !== undefined || offset !== undefined) {
-    selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset};`;
+    if(user_no !== undefined) {
+      selectQuery = `SELECT * FROM diary WHERE user_no=${user_no} ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset};`;
+    } else {
+      selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC LIMIT ${limit} OFFSET ${offset};`;
+    }
   } else {
-    selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC;`;
+    if(user_no !== undefined) {
+      selectQuery = `SELECT * FROM diary WHERE user_no=${user_no} ORDER BY diary_no DESC;`;
+    } else {
+      selectQuery = `SELECT * FROM diary ORDER BY diary_no DESC;`;
+    }
   }
   db.query(selectQuery, (err, result) => {
+    console.log(selectQuery)
     if(err) console.log("err",err);
     else {res.send(result)}
   })
@@ -107,7 +117,24 @@ router.post('/onePost', (req,res) => {
 router.post('/modify', (req,res) => {
   const no = req.body.no;
   const newTitle = req.body.newTitle;
-  let modifyQuery = `UPDATE diary SET title=${newTitle} WHERE diary_no=${no}`;
+  const newContent = req.body.newContent;
+  //content parsing =============================
+  const con1 = newContent.split('<figure class=\"image\">');
+  let contentResult = '';
+  con1.map(arr => {
+    if(arr.includes('</figure>')) {
+      const con2 = arr.split('</figure>')
+      con2.map(arr2 => {
+        if(!arr2.includes('<img')) {
+          contentResult += arr2;
+        }
+      })
+    } else {
+      contentResult = arr;
+    }
+  });
+  //============================================
+  let modifyQuery = `UPDATE diary SET title='${newTitle}', content='${newContent}', content_parse='${contentResult}' WHERE diary_no=${no}`;
   db.query(modifyQuery, (err,result) => {
     if(err) console.log("err",err);
     else {res.send(result)}

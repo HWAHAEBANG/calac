@@ -9,12 +9,9 @@ router.use(cookieParser());
 const authMiddleware = (req, res, next) => {
   if (req.cookies && req.cookies.sid) {
     // 쿠키가 있는 경우 인증 성공
-    console.log(req.cookies);
     next();
   } else {
     // 쿠키가 없는 경우 로그인 페이지로 이동
-    // console.log(req.cookies);
-    console.log("외않되", req.cookies);
     res.redirect("/");
   }
 };
@@ -64,7 +61,7 @@ router.post("/login", (req, res) => {
   const sqlQuery = "SELECT * FROM users WHERE user_id = ?;";
   db.query(sqlQuery, [user_id], (err, result) => {
     if (err) {
-      console.log("에러임", err);
+      console.log(err);
       res
         .status(500)
         .json({ success: false, message: "Internal Server Error" });
@@ -96,12 +93,11 @@ router.post("/login", (req, res) => {
           };
 
           req.session.userInfo = userInfo; // 세션객체에 로그인 정보 저장
-          console.log("확인들어갑니다잉", req.session.userInfo);
           res.cookie("sid", req.sessionID, {
             maxAge: 1000 * 60 * 60 * 24,
             domain: "localhost",
           }); // 세션 ID를 브라우저에 sid쿠키로 저장
-          // res.send(userInfo); //필요 없을 듯.? 이 아니네 이거 없으면 쿠키 안생김 왜.,.?
+          // res.send(userInfo); //필요 없을 듯.?
           res.status(200).json({ success: true, userInfo });
         } else {
           // res.send("Login failed");
@@ -115,10 +111,9 @@ router.post("/login", (req, res) => {
 // 세션 객체에서 현재 사용자 정보 받아오기 ========
 router.get("/user-info", (req, res) => {
   const userInfo = req.session.userInfo; // 세션 객체에서 유저 정보를 가져옴
-  console.log(userInfo);
   if (userInfo) {
     // 유저 정보가 있으면 JSON 형태로 응답
-    res.cookie("sid", req.session.id, { maxAge: 1000 * 60 * 60 * 24 }); // 세션 ID를 쿠키에 저장
+    // res.cookie("sid", req.session.id, { maxAge: 1000 * 60 * 60 * 24 }); // 세션 ID를 쿠키에 저장
     res.status(200).json({ success: true, userInfo });
   } else {
     // 유저 정보가 없으면 401 Unauthorized 에러 반환
@@ -214,10 +209,8 @@ router.get("/findPw", (req, res) => {
       inputQuiz === result[0].user_quiz &&
       result[0].user_answer === inputAnswer
     ) {
-      console.log(true);
       res.send(true);
     } else {
-      console.log(false);
       res.send(false);
     }
   });
@@ -303,7 +296,6 @@ router.post("/changeUserInfo", (req, res) => {
             hash: user_hash,
           };
 
-          console.log("확인좀해보자1", result);
           req.session.userInfo = userInfo;
           res.send(result);
         }
@@ -343,7 +335,6 @@ router.post("/changeUserInfo", (req, res) => {
             updatedAt: user_updatedAt,
           };
 
-          console.log("확인좀해보자2", result);
           req.session.userInfo = userInfo;
           res.send(result);
         }

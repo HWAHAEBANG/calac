@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { Box, SpeedDial, SpeedDialIcon, SpeedDialAction, Modal, Tab, Typography, Button, FormControl, Input, InputAdornment } from '@mui/material';
+import { Box, SpeedDial, SpeedDialIcon, SpeedDialAction, Modal, Tab, Typography, Button, FormControl, Input, InputAdornment, TextField } from '@mui/material';
 import { styled } from "@mui/material/styles"; 
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -42,9 +42,11 @@ const BottomLedgerButton = () => {
   };
   //=================================================================================
   // 설명 입력창 (빈값 허용)
-  const hadleDescription = (e) => {
+  const handleDescription = (e) => {
     const descriptionValue = e.target.value;
-    setDescription(descriptionValue);
+    setDescription(descriptionValue) 
+    // if (choiceModal === 'expense') { setDescription(descriptionValue) }
+    // if (choiceModal === 'income') { setDescription(descriptionValue) }
   };
   //=================================================================================
   // 금액 입력창
@@ -65,7 +67,7 @@ const BottomLedgerButton = () => {
   const handleSave = () => {
     if (choiceModal === 'expense') {
       modalData.push({choiceModal, expenseCategory, count, description});
-      console.log('expe', expenseCategory)
+      // console.log('expe', expenseCategory)
       axios.post('http://localhost:5000/ledger/insert', {
         category : modalData[0].expenseCategory,
         type : modalData[0].choiceModal,
@@ -74,7 +76,7 @@ const BottomLedgerButton = () => {
       })
     } else {
       modalData.push({choiceModal, incomeCategory, count, description});
-      console.log('inc', incomeCategory)
+      // console.log('inc', incomeCategory)
       axios.post('http://localhost:5000/ledger/insert', {
         category : modalData[0].incomeCategory,
         type : modalData[0].choiceModal,
@@ -83,11 +85,7 @@ const BottomLedgerButton = () => {
       })
     }
     setOpen(false);
-    console.log('modal', modalData)
-  };
-  //=================================================================================
-  const addCategory = () => {
-    console.log('click')
+    // console.log('modal', modalData)
   };
   //=================================================================================
   const style = {
@@ -168,7 +166,6 @@ const BottomLedgerButton = () => {
                 <Tab sx={{padding:'0px'}} label="병원/약국" value='병원/약국'/>
                 <Tab sx={{padding:'0px'}} label="간식비" value='간식비'/>
                 <Tab sx={{padding:'0px'}} label="반려묘/견" value='반려묘/견'/>
-                <Tab sx={{padding:'0px'}} label="+" value='+' onClick={()=>addCategory()}/>
               </Tabs>
             ) : (
               <Tabs
@@ -184,19 +181,20 @@ const BottomLedgerButton = () => {
                 }}
               >
                 <Tab sx={{padding:'0px'}} label="월급" value='월급'/>
-                <Tab sx={{padding:'0px'}} label="+" value='+' onClick={()=>addCategory()}/>
+                <Tab sx={{padding:'0px'}} label="기타" value='기타'/>
               </Tabs>
             ) }
           </Box>
           <Box sx={{mt:3, textAlign:'right'}}>
-            <Input
-              id="money"
+            <Input 
+              sx={{mt:3}}
+              id="description"
               startAdornment={<InputAdornment position="start">설명</InputAdornment>}
-              aria-describedby="money"
+              aria-describedby="description"
               inputProps={{
-                'aria-label': 'money',
+                'aria-label': 'description',
               }}
-              onChange={hadleDescription}
+              onChange={handleDescription}
             />
             <FormControl variant="standard" sx={{ mt:3, width:'100px'}}>
               <Input

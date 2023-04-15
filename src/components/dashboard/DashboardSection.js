@@ -1,18 +1,27 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Box, Grid, Divider } from "@mui/material";
 import DashboardChart from "./DashboardChart";
 import DashboardCalendar from "./DashboardCalendar";
 import DashboardMonthGoal from "./DashboardMonthGoal";
 import TopStateBar from "../common/TopBar";
-import axios from 'axios';
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { getSession } from "../../redux/user/actions";
 
 const DashboardSection = () => {
+  const dispatch = useDispatch();
+  const hasSidCookie = useSelector((state) => state.hasSidCookie);
+  const session = useSelector((state) => state.session);
+
+  useEffect(() => {
+    dispatch(getSession());
+  }, [hasSidCookie]); // 없어도 될라나? 테스트 해
 
   return (
     <SectionWrap container>
       <SectionUpGrid item xs={12}>
-        <TopStateBar />
+        <TopStateBar hasSidCookie={hasSidCookie} session={session} />
         <DashboardChart />
       </SectionUpGrid>
       <FlexBox>
@@ -29,20 +38,20 @@ const DashboardSection = () => {
 };
 //style=================================================
 const SectionWrap = styled(Grid)({
-  height:'100vh',
-  width:'100%',
-  display:'flex',
-  justifyContent:'center'
+  height: "100vh",
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
 });
 const SectionUpGrid = styled(Grid)({
-  height:'55%',
-  borderBottom:'1px solid #ddd'
+  height: "55%",
+  borderBottom: "1px solid #ddd",
 });
 const FlexBox = styled(Box)({
-  height:'45%',
-  display:'flex',
-  width:'100%',
-  alignItems:'center',
+  height: "45%",
+  display: "flex",
+  width: "100%",
+  alignItems: "center",
 });
 //======================================================
 export default DashboardSection;

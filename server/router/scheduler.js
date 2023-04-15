@@ -1,18 +1,14 @@
 const express = require("express");
 const router = express.Router();
-// 쿠키사용시 추가 ============================== (보류, 카테고리 안 받아와짐)
-// const { sessionMiddleware, authMiddleware, cookieParser } = require("./users");
-// router.use(cookieParser());
-// router.use(sessionMiddleware);
-// router.use(authMiddleware);
 //DB연결부 =====================================
 const connectDB = require("../config/connectDB.js");
 const db = connectDB.init();
 connectDB.open(db);
 // 이벤트 데이터 받아오기 =========================
 router.get("/", (req, res) => {
-  const sqlQuery = "SELECT * FROM event_list";
-  db.query(sqlQuery, (err, result) => {
+  const currentUserNo = req.query.currentUserNo;
+  const sqlQuery = "SELECT * FROM event_list WHERE user_no = ?";
+  db.query(sqlQuery, [currentUserNo], (err, result) => {
     res.send(result);
     console.log("result", result);
   });
@@ -78,22 +74,20 @@ router.delete("/delete/:id", (req, res) => {
       console.log(err);
     } else {
       res.send("success!");
-      console.log("result", result);
-      console.log("req.body", req.body);
     }
   });
 });
 
-// //==============================================
+//==============================================
 router.get("/category", (req, res) => {
-  const sqlQuery = "SELECT * FROM category_list";
-  db.query(sqlQuery, (err, result) => {
+  const currentUserNo = req.query.currentUserNo;
+  const sqlQuery = "SELECT * FROM category_list WHERE user_no = ?";
+  db.query(sqlQuery, [currentUserNo], (err, result) => {
     if (err) {
-      // res.send(result);
-      console.log("뭔디result", err);
+      console.log(err);
     } else {
       res.send(result);
-      console.log("뭔디result", result);
+      console.log(result);
     }
   });
 });
