@@ -152,6 +152,9 @@ div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main > div {
 .MuiDialogContent-root > .MuiBox-root > div > figure > img {
   width: 400px;
 }
+.MuiDialogContent-root > .MuiBox-root > div > p > img {
+  width: 400px;
+}
 /* MUI dialog ==================================== */
 .MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm {
   position: absolute;
