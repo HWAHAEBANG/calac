@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Box,
@@ -31,9 +31,9 @@ const Nav = () => {
     removeCookie("connect.sid", { path: "/" });
   };
   //=================================================================================
-  useEffect(()=>{
+  useEffect(() => {
     setBtnActive(window.location.pathname.slice(1));
-  })
+  });
   //=================================================================================
   return (
     <NavBar>
@@ -171,11 +171,13 @@ const Nav = () => {
           )}
 
           {!hasSidCookie && (
-          <Link to='/login/signup'>
-            <Typography sx={{ color: "#c1c1c1", textDecoration: "underline" }}>
-              Sign up
-            </Typography>
-          </Link>
+            <Link to='/login/signup'>
+              <Typography
+                sx={{ color: "#c1c1c1", textDecoration: "underline" }}
+              >
+                Sign up
+              </Typography>
+            </Link>
           )}
         </nav>
       </Box>

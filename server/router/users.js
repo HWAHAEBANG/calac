@@ -168,6 +168,7 @@ router.post("/insert", (req, res) => {
           user_answer,
           user_email,
         };
+        console.log("여기", newEvent);
         res.send(newEvent);
       }
     }

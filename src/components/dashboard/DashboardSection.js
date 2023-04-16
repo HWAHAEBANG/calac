@@ -27,7 +27,7 @@ const DashboardSection = () => {
       </SectionUpGrid>
       <FlexBox>
         <Grid item xs={6.5}>
-          <DashboardCalendar />
+          <DashboardCalendar hasSidCookie={hasSidCookie} session={session} />
         </Grid>
         <Divider orientation='vertical' flexItem />
         <Grid item xs={5.5}>
