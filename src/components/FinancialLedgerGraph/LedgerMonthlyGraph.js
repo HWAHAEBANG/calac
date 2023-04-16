@@ -10,21 +10,10 @@ const LedgerGraphChart = () => {
   useEffect(() => {
     axios.get('http://localhost:5000/ledger/monthly/category')
     .then((res) => {
-      console.log('123', res.data)
       setMonthlyData(res.data);
     })
   }, []);
   //======================================================
-  // const result = monthlyData.reduce((a, b) => {
-  //   const categoryIndex = a.findIndex(item => item.name === b.ledger_category);
-  //   if (categoryIndex === -1) {
-  //     a.push({name: b.ledger_category, data: [b.monthly_sum_count]});
-  //   } else {
-  //     a[categoryIndex].data.push(b.monthly_sum_count);
-  //   }
-  //   return a;
-  // }, []);
-  // console.log('456', result)
   const outputArray = [];
 
   // 카테고리별로 데이터 묶기
@@ -50,13 +39,11 @@ const LedgerGraphChart = () => {
     }, { data: [], date: [] });
     outputArray.push({ name: category, data: data.data, date: data.date });
   });
-  console.log('dddddddddd', outputArray)
+  // console.log('dddddddddd', outputArray)
   //======================================================
-  outputArray.map(list => {
-    return(
-      console.log(list.date)
-    )
-  })
+  // outputArray.map(list => {
+  //   return( console.log(list.date) )
+  // })
   //======================================================
   let today = new Date();
   let year = today.getFullYear();

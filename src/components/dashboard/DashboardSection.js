@@ -19,12 +19,6 @@ const DashboardSection = () => {
     dispatch(getSession());
   }, [hasSidCookie]);
 
-  // const [cookies, setCookie, removeCookie] = useCookies(["sid", "connect.sid"]);
-  // if (!session && hasSidCookie) {
-  //   removeCookie("sid", { path: "/" });
-  //   removeCookie("connect.sid", { path: "/" });
-  // }
-
   return (
     <SectionWrap container>
       <SectionUpGrid item xs={12}>

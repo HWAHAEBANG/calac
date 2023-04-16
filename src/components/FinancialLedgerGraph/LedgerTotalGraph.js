@@ -37,7 +37,7 @@ const LedgerTotalGraph = () => {
   }, []);
   // 렌더링 해결해야함.
   //======================================================  
-  const minusPercent = Math.round((totalExpense/totalIncome)*100);
+  let minusPercent = Math.round(totalExpense/totalIncome*100);
   //======================================================
   const state = {
     series: [minusPercent],

@@ -18,7 +18,6 @@ router.get('/goal', (req, res) => {
   const selectQuery = "select * from goal"
   db.query(selectQuery, (err, result) => {
     res.send(result);
-    console.log('result', result);
   })
 });
 

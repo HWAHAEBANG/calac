@@ -54,17 +54,10 @@ const LedgerGoalGraph = () => {
     setOpenInput(false);
   }
   //======================================================
-  // 모달창 취소버튼
-  // const handleCancel = () => {
-  //   setOpenInput(false);
-  //   setMoney(money)
-  //   // setMoney(res.data[0]['money_count']);
-  // }
-  //======================================================
   // 모달창 저장버튼
   const handleSave = () => {
     setOpen(false);
-    axios.put (`http://localhost:5000/ledger/goal/update/${moneyNo}`, {
+    axios.put(`http://localhost:5000/ledger/goal/update/${moneyNo}`, {
       count : changeGoalMoney,
       no : moneyNo
     })
@@ -220,7 +213,15 @@ const LedgerGoalGraph = () => {
                 취소
               </ClickBtn>
             ) }
-            {noData && (
+            {noData && !openInput && (
+              <ClickBtn
+              variant="contained"
+              onClick={() => {setOpen(false)}}
+              >
+                닫기
+              </ClickBtn>
+            )}
+            {noData && openInput && (
               <ClickBtn
               variant="contained"
               onClick={() => {handleSaveMoney()}}
@@ -236,7 +237,7 @@ const LedgerGoalGraph = () => {
               닫기
               </ClickBtn>
             )}
-            {openInput && (
+            {openInput && !noData && (
               <ClickBtn
                 variant="contained"
                 onClick={() => {handleSave()}}

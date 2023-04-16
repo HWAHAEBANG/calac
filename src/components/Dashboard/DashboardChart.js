@@ -76,7 +76,7 @@ const DashboardChart = () => {
         </ResponsiveContainer>
       </ChartLeftBox>
       <ChartRightBox>
-        test
+        내용
       </ChartRightBox>
     </ChartWrap>
   );
@@ -97,6 +97,7 @@ const ChartRightBox = styled(Box)({
   border : '1px solid #ddd',
   borderRadius:'20px',
   margin:'2.5%',
+  padding:'10px'
 });
 //======================================================
 
