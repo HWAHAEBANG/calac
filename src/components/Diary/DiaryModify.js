@@ -34,28 +34,22 @@ const DiaryModify = ({isModify,setIsModify,diary_no,hasSidCookie}) => {
   }
   //======================================================
   const modify = (no) => {
-    // if(newContent.title.length === 0 || newContent.content.length === 0) {
-    //   alert('변경된 내용이 없어 수정이 불가합니다.');
-    //   setIsModify(false);
-    // }else {
-      console.log("newTitle",newContent.title)
-      console.log("newContent",newContent.content)
-      axios.post('http://localhost:5000/diary/modify',{
-        no : no,
-        newTitle : newContent.title,
-        newContent : newContent.content
-      })
-      .then(res=>{
-        alert('수정되었습니다 :)');
-        setIsModify(false);
-      })
-    // }
+    let postTitle = (newContent.title.length === 0) ? getTitle : newContent.title;
+    axios.post('http://localhost:5000/diary/modify',{
+      no : no,
+      newTitle : postTitle,
+      newContent : newContent.content
+    })
+    .then(res=>{
+      alert('수정되었습니다 :)');
+      setIsModify(false);
+    })
   }
   //======================================================
+  console.log("2",newContent.title.length)
   useEffect(()=>{
     axios.post("http://localhost:5000/diary/onePost", {no:diary_no})
     .then(res=>{
-      console.log("d",res.data[0])
       setGetTitle(res.data[0].title)
       setGetContent(res.data[0].content)
     });

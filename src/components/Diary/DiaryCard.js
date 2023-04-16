@@ -23,6 +23,7 @@ const DiaryCard = () => {
   const [content, setContent] = useState('');
   const [image, setImage] = useState('');
   const [createdAt, setCreatedAt] = useState('');
+  const [user, setUser] = useState('');
   const [posts, setPosts] = useState([]);
   const [commentCnt, setCommentCnt] = useState([]);
   //======================================================
@@ -42,13 +43,14 @@ const DiaryCard = () => {
     }
   };
   //======================================================
-  const openDetailModal = (id,title,content,image,createdAt) => {
+  const openDetailModal = (id,title,content,image,createdAt,user) => {
     setIsDetailOpen(true);
     setId(id);
     setTitle(title);
     setContent(content);
     setCreatedAt(new Date(createdAt).toLocaleString())
     setImage(image);
+    setUser(user)
   }
   //======================================================
   useEffect(()=>{
@@ -60,19 +62,11 @@ const DiaryCard = () => {
   //======================================================
   let offset = 0;
   const loadDiary = () => {
-    if(session !== null){
-      axios.post(`http://localhost:5000/diary?limit=10&offset=${offset}`,{user_no : session.userInfo.no})
-      .then(res=>{
-        setPosts(oldPosts => [...oldPosts, ...res.data]);
-        offset += 10;
-      });
-    } else {
-      axios.post(`http://localhost:5000/diary?limit=10&offset=${offset}`)
-      .then(res=>{
-        setPosts(oldPosts => [...oldPosts, ...res.data]);
-        offset += 10;
-      });
-    }
+    axios.post(`http://localhost:5000/diary?limit=10&offset=${offset}`)
+    .then(res=>{
+      setPosts(oldPosts => [...oldPosts, ...res.data]);
+    });
+    offset += 10;
   }
   //======================================================
   const handleScroll = (e) => {
@@ -81,13 +75,18 @@ const DiaryCard = () => {
     }
   }
   //======================================================
-  const handleClickOpen = (id) => {
-    setIsModify(true);
-    console.log(isModify)
+  const handleClickOpen = (id,user) => {
+    if(session.userInfo.no !== user){alert("본인만 수정 가능합니다 :)")}
+    else {setIsModify(true);}
   }
   //======================================================
-  const onDelete = (id) => {
-    if (!hasSidCookie) {alert("삭제 권한이 없습니다. 로그인을 진행해주세요 :(")}
+  const onDelete = (id,user) => {
+    if (!hasSidCookie) {
+      alert("삭제 권한이 없습니다. 로그인을 진행해주세요 :(")
+    }
+    else if (session.userInfo.no !== user){
+      alert("본인만 삭제 가능합니다 :) ")
+    }
     else {
       if(window.confirm(`정말 삭제하시겠습니까?`) === true) {
         axios.post('http://localhost:5000/diary/delete' , {
@@ -128,13 +127,13 @@ const DiaryCard = () => {
                         <MoreBox>
                           <List>
                             <ListItem disablePadding >
-                              <ListItemButtonIcon onClick={()=>handleClickOpen(list.diary_no)}> 
+                              <ListItemButtonIcon onClick={()=>handleClickOpen(list.diary_no, list.user_no)}> 
                                 <AutoFixNormalIcon />
                                 <ListItemText primary="modify"/>
                               </ListItemButtonIcon>
                             </ListItem>
                             <ListItem disablePadding>
-                              <ListItemButtonIcon  onClick={()=>onDelete(list.diary_no)}>
+                              <ListItemButtonIcon  onClick={()=>onDelete(list.diary_no, list.user_no)}>
                                 <DeleteOutlineIcon />
                                 <ListItemText primary="delete" />
                               </ListItemButtonIcon>
@@ -157,8 +156,8 @@ const DiaryCard = () => {
                 title={list.title}
                 disableTypography
               />
-              <DateTypography>{new Date(list.createdAt).toLocaleString()}</DateTypography>
-              <Button onClick={()=>openDetailModal(list.diary_no,list.title, list.content,list.image,list.createdAt)}>
+              <DateTypography>[{list.user_name}] {new Date(list.createdAt).toLocaleString()}</DateTypography>
+              <Button onClick={()=>openDetailModal(list.diary_no,list.title, list.content,list.image,list.createdAt,list.user_name)}>
                 {list.image !== "NULL" ? (
                   <MyCardMedia
                     component="img"
@@ -208,6 +207,7 @@ const DiaryCard = () => {
           content={content}
           image={image}
           createdAt={createdAt}
+          user={user}
         />
       )}
     </CardBox>
@@ -230,6 +230,7 @@ const CardList = styled(List)({
 });
 const CardListItem = styled(ListItem)({
   width: `45vh`,
+  height: '62%',
   border: `1px solid #ebebec`,
   margin: `20px 30px 37px 20px`
 });

@@ -6,25 +6,32 @@ import ReactHtmlParser from "react-html-parser";
 import axios from 'axios';
 import NoPermissionBlock from "../common/NoPermissionBlock";
 import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"; 
+import { getSession } from "../../redux/user/actions"; 
 
-const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,hasSidCookie}) => {
+const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,user}) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState ({comment: ''})
   const [isUpdate, setIsUpdate] = useState('false');
-  const [updateComment, setUpdateComment] = useState('')
+  const [updateComment, setUpdateComment] = useState({comment: ''})
   const [updateTime, setUpdateTime] = useState(false);
+  const [countIdx, setCountIdx] = useState(0);
+  //======================================================
+  const dispatch = useDispatch(); 
+  const hasSidCookie = useSelector((state) => state.hasSidCookie); 
+  const session = useSelector((state) => state.session); 
   //======================================================
   const commentHandle = (e) => {
-    const data = e.target.value;
+    const {value} = e.target;
     if(isUpdate) {
       setNewComment({
         ...newComment,
-        comment : data
+        comment : value
       })
     } else {
       setUpdateComment({
         ...updateComment,
-        comment : data
+        comment : value
       })
     }
   }
@@ -33,7 +40,8 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,ha
     if(newComment.comment.length > 0){
       axios.post('http://localhost:5000/comments/insert',{
         diary_no : id,
-        comment : newComment.comment
+        comment : newComment.comment,
+        user : session.userInfo.no
       })
       .then(()=>{
         alert('댓글이 등록되었습니다 :)')
@@ -57,14 +65,16 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,ha
     }
   }
   //======================================================
-  const clickUpdateBtn = (id) => {
+  const clickUpdateBtn = (id,comment) => {
+    setCountIdx(id);
     if(isUpdate) {
       setIsUpdate(false);
     } else {
       setIsUpdate(true);
+      let sendComment = updateComment.comment.length === 0 ? comment : updateComment.comment;
       if(window.confirm(`정말 수정하시겠습니까?`) === true) {
         axios.post('http://localhost:5000/comments/update', {
-          updateComment : updateComment.comment,
+          updateComment : sendComment,
           comment_no : id
         })
         .then(()=>{
@@ -76,7 +86,6 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,ha
       }
     }
   }
-
   //======================================================
   useEffect(()=>{
     axios.post('http://localhost:5000/comments', {
@@ -84,6 +93,10 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,ha
     })
     .then(res=>{setComments(res.data[0])});
   },[comments])
+  //======================================================
+  useEffect(() => {
+    dispatch(getSession());
+  }, [hasSidCookie]); 
   //======================================================
   return (
     <Box>
@@ -95,9 +108,10 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,ha
         <DialogBox>
           <TitleBox>
             <TitleSmallBox>
-              <Avatar alt="Remy Sharp" src="/images/avatar.png">
-                <UserTypography>{id}</UserTypography>
-              </Avatar>
+              <UserBox>
+                <Avatar alt="Remy Sharp" src="/images/avatar.png" />
+                <UserTypography>{user}</UserTypography>
+              </UserBox>
               <DialogTitle>{title}</DialogTitle>
             </TitleSmallBox>
           </TitleBox>
@@ -125,6 +139,7 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,ha
                   label="댓글달기" 
                   size="small" 
                   onChange={commentHandle}
+                  value={newComment.comment}
                 />
               )}
               <CommentButton onClick={()=>submitComment(id)}>등록</CommentButton>
@@ -135,27 +150,41 @@ const DiaryDetail = ({isDetailOpen,setIsDetailOpen,id,title,content,createdAt,ha
                       {isUpdate ? (
                         updateTime ? (
                           <ListItemText
-                            primary={`${list.comment} (${list.user_id} ${new Date(list.createdAt).toLocaleString()})`}
+                            primary={`${list.comment} (${list.user_id} ${new Date(list.updatedAt).toLocaleString()})`}
                           />
                         ):(
                           <ListItemText
-                            primary={`${list.comment} (${list.user_id} ${new Date(list.updatedAt).toLocaleString()})`}
+                            primary={`${list.comment} (${list.user_id} ${new Date(list.createdAt).toLocaleString()})`}
                           />
                         )
                       ):(
-                        <CommentTextField 
-                          id="outlined-basic" 
-                          variant="outlined" 
-                          label={list.comment}
-                          size="small" 
-                          onChange={commentHandle}
-                        />
+                        countIdx === list.comment_no ? (
+                          <CommentTextField 
+                            id="outlined-basic" 
+                            variant="outlined" 
+                            value={updateComment.comment || list.comment}
+                            size="small" 
+                            onChange={commentHandle}
+                          />
+                        ):(
+                          updateTime ? (
+                            <ListItemText
+                              primary={`${list.comment} (${list.user_id} ${new Date(list.updatedAt).toLocaleString()})`}
+                            />
+                          ):(
+                            <ListItemText
+                              primary={`${list.comment} (${list.user_id} ${new Date(list.createdAt).toLocaleString()})`}
+                            />
+                          )
+                        )
                       )}
                       {hasSidCookie && (
-                        <>
-                          <CommentUpdate onClick={()=>clickUpdateBtn(list.comment_no)}>{isUpdate ? "수정" : "완료"}</CommentUpdate>
-                          <CommentDelete onClick={()=>commentDelete(list.comment_no)}>삭제</CommentDelete>
-                        </>
+                        session.userInfo.no === list.user_no && (
+                          <>
+                            <CommentUpdate onClick={()=>clickUpdateBtn(list.comment_no, list.comment)}>{isUpdate ? "수정" : "완료"}</CommentUpdate>
+                            <CommentDelete onClick={()=>commentDelete(list.comment_no)}>삭제</CommentDelete>
+                          </>
+                        )
                       )}
                     </ListItem>
                   )
@@ -194,9 +223,12 @@ const TitleSmallBox = styled(Box)({
   display:'flex',
   alignItems:'center',
 })
+const UserBox = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center'
+})
 const UserTypography = styled(Typography)({
-  padding: 0,
-  marginLeft: 13,
 })
 const DateTypography = styled(Typography)({
   fontSize: 15,

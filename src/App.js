@@ -6,11 +6,11 @@ import store from "./redux/store";
 
 function App() {
   // 로그아웃을 하지 않는 채 창을 닫으면, 현재 있는 세션의 기한을 바꿔 만료시켜버린다.=======
-  window.addEventListener("beforeunload", () => {
-    document.cookie = "sid=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie =
-      "connect.sid=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  });
+  // window.addEventListener("beforeunload", () => {
+  //   document.cookie = "sid=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  //   document.cookie =
+  //     "connect.sid=;expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  // });
   //===================================================================================
 
   return (

@@ -16,14 +16,6 @@ const DiaryMoreButton = ({posts, id, open}) => {
   const handleClickOpen = (e) => {
     setClickId(e)
     setModalOpen(true);
-    console.log('2', clickId)
-    console.log('5', modalOpen)
-    console.log('6', e)
-  };
-  console.log('4', id)
-  console.log('7', modalOpen)
-  console.log('3', clickId)
-  const handleClose = () => {
   };
   //======================================================
   const onDelete = (id) => {
@@ -37,10 +29,8 @@ const DiaryMoreButton = ({posts, id, open}) => {
     }
   }
   //======================================================
-  // useEffect(()=>{
-  //   console.log("open",open)
-  //   console.log("openMoreButton",openMoreButton)
-  // },[])
+  useEffect(()=>{
+  },[])
   //======================================================
   return (
     <TabBox>
