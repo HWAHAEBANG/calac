@@ -65,7 +65,6 @@ router.post('/insert',(req,res) => {
 
 router.post('/delete', (req,res) => {
   const id = req.body.id;
-  console.log("id",id)
   const deleteQuery = `DELETE FROM diary WHERE diary_no=${id}`;
   db.query(deleteQuery, (err, result) => {
     if(err) console.log("err",err);

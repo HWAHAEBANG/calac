@@ -95,7 +95,7 @@ router.post("/login", (req, res) => {
           req.session.userInfo = userInfo; // 세션객체에 로그인 정보 저장
           res.cookie("sid", req.sessionID, {
             maxAge: 1000 * 60 * 60 * 24,
-            domain: "localhost",
+            domain: "calac.cafe24app.com",
           }); // 세션 ID를 브라우저에 sid쿠키로 저장
           // res.send(userInfo); //필요 없을 듯.?
           res.status(200).json({ success: true, userInfo });
@@ -168,7 +168,6 @@ router.post("/insert", (req, res) => {
           user_answer,
           user_email,
         };
-        console.log("여기", newEvent);
         res.send(newEvent);
       }
     }
@@ -182,7 +181,6 @@ router.get("/duplicatedId", (req, res) => {
   db.query(sqlQuery, (err, result) => {
     if (err) throw err;
     res.send(result);
-    console.log("result", result);
   });
 });
 //==============================================
@@ -194,7 +192,6 @@ router.get("/findId", (req, res) => {
   db.query(sqlQuery, [name, email], (err, result) => {
     if (err) throw err;
     res.send(result);
-    console.log("result", result);
   });
 });
 //==============================================
@@ -226,7 +223,6 @@ router.put("/findPw/changePw", (req, res) => {
   const sqlQuery =
     "UPDATE users SET user_salt=?, user_hash=? WHERE user_id = ?;";
   db.query(sqlQuery, [user_salt, user_hash, user_id], (err, result) => {
-    console.log(result);
     if (err) {
       console.log(err);
     } else {

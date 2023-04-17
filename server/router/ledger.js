@@ -123,7 +123,6 @@ router.put("/total/update/:id", (req, res) => {
   const category = req.body.category;
   const description = req.body.description;
   const count = req.body.count;
-  console.log('ddd', id, category, description, count)
   const updateQuery = `UPDATE ledger SET ledger_category='${category}', ledger_description='${description}', ledger_count='${count}', ledger_updatedAt=current_timestamp WHERE ledger_no = '${id}'`;
   db.query(updateQuery, (err, result) => {
     res.send(result);

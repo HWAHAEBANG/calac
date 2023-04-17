@@ -29,7 +29,7 @@ app.listen(PORT, () => {
 
 // /////////
 // const db = mysql.createPool({
-//   host: "localhost",
+//   host: "calac.cafe24app.com",
 //   user: "root",
 //   password: "1234",
 //   database: "calacDB",
