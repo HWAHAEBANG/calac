@@ -10,7 +10,7 @@ const path = require("path");
 // app.use(cors());
 app.use(
   cors({
-    origin: "http://calac.cafe24app.com",
+    origin: "*",
     credentials: true,
   })
 );

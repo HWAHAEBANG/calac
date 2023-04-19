@@ -72,7 +72,8 @@ const DiaryCard = () => {
   };
   //======================================================
   useEffect(() => {
-    axios.get("http://calac.cafe24app.com/comments/count").then((res) => {
+    axios.get("http://calac.cafe24app.com/comments/comments/count").then((res) => {
+      console.log("data",res)
       setCommentCnt(res.data);
     });
   }, [commentCnt]);
@@ -230,7 +231,7 @@ const DiaryCard = () => {
                     )}
                   </ContentBox>
                 </MyCardContent>
-                <CommentBox>
+                {/* <CommentBox>
                   {commentCnt.length !== 0 &&
                     commentCnt.map((count, idx) => {
                       return (
@@ -241,7 +242,7 @@ const DiaryCard = () => {
                         )
                       );
                     })}
-                </CommentBox>
+                </CommentBox> */}
               </Box>
             </CardListItem>
           );

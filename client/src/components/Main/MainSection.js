@@ -20,7 +20,7 @@ const MainSection = () => {
   return (
     <SectionWrap container>
       <SectionUpGrid item xs={12}>
-        <TopStateBar hasSidCookie={hasSidCookie} session={session} />
+        {/* <TopStateBar hasSidCookie={hasSidCookie} session={session} /> */}
         <MainChart />
       </SectionUpGrid>
       <FlexBox>
@@ -29,7 +29,7 @@ const MainSection = () => {
         </Grid>
         <Divider orientation='vertical' flexItem />
         <Grid item xs={5.5}>
-          <MainMonthGoal />
+          {/* <MainMonthGoal /> */}
         </Grid>
       </FlexBox>
     </SectionWrap>
