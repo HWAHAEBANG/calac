@@ -72,7 +72,7 @@ const DiaryCard = () => {
   };
   //======================================================
   useEffect(() => {
-    axios.get("http://calac.cafe24app.com/comments/comments/count").then((res) => {
+    axios.get("http://calac.cafe24app.com/diary/comments/count").then((res) => {
       console.log("data",res)
       setCommentCnt(res.data);
     });

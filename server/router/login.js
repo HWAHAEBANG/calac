@@ -55,7 +55,7 @@ connectDB.open(db);
 // 이하 데이터 처리부 ########################################################
 
 //로그인 =======================================
-router.post("/login", (req, res) => {
+router.post("/", (req, res) => {
   const user_id = req.body.id;
   // const user_pwd = req.body.pwd;
   const sqlQuery = "SELECT * FROM users WHERE user_id = ?;";
