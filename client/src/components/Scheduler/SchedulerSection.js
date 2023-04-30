@@ -13,7 +13,6 @@ const SchedulerSection = () => {
       ) : (
         <NoPermissionBlock
           menu='스케줄러'
-          /* comment='여기에 개별 멘트를 주가할 수 있습니다.' */
         />
       )}
       <FullCalendarLib />

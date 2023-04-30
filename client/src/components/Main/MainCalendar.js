@@ -48,7 +48,7 @@ const MainCalendar = ({ hasSidCookie, session }) => {
     if (!hasSidCookie || !session || !session.userInfo) return;
     axios
       .get(
-        `http://localhost:8001/scheduler?currentUserNo=${session.userInfo.no}`,
+        `http://calac.cafe24app.com/scheduler?currentUserNo=${session.userInfo.no}`,
         { withCredentials: true }
       )
       .then((response) => {

@@ -75,7 +75,7 @@ const DiaryModify = ({ isModify, setIsModify, diary_no, hasSidCookie }) => {
       >
         <DialogBox>
           <TitleBox>
-            <Avatar alt='Remy Sharp' src='/images/avatar.png'></Avatar>
+            <Avatar alt='Remy Sharp' src='/img/avatar.png'></Avatar>
             <TitleTextField
               id='standard-helperText'
               value={newContent.title || getTitle}

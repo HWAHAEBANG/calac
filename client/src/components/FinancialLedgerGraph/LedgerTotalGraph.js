@@ -12,7 +12,7 @@ const LedgerTotalGraph = () => {
   useEffect(() => {
     let type = "income";
     axios
-      .get(`http://calac.cafe24app.com/ledger/monthly/total?type=${type}`)
+      .get(`http://calac.cafe24app.com/financialledger/monthly/total?type=${type}`)
       .then((res) => {
         if (res.data.length === 0) {
           setNoData(true);
@@ -27,7 +27,7 @@ const LedgerTotalGraph = () => {
   useEffect(() => {
     let type = "expense";
     axios
-      .get(`http://calac.cafe24app.com/ledger/monthly/total?type=${type}`)
+      .get(`http://calac.cafe24app.com/financialledger/monthly/total?type=${type}`)
       .then((res) => {
         if (res.data.length === 0) {
           setNoData(true);

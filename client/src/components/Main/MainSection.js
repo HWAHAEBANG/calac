@@ -20,7 +20,7 @@ const MainSection = () => {
   return (
     <SectionWrap container>
       <SectionUpGrid item xs={12}>
-        {/* <TopStateBar hasSidCookie={hasSidCookie} session={session} /> */}
+        <TopStateBar hasSidCookie={hasSidCookie} session={session} />
         <MainChart />
       </SectionUpGrid>
       <FlexBox>

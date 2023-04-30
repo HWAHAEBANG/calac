@@ -26,7 +26,6 @@ import DiaryDetail from "./DiaryDetail";
 import axios from "axios";
 import ReactHtmlParser from "react-html-parser";
 import DiaryModify from "./DiaryModify";
-import NoPermissionBlock from "../common/NoPermissionBlock";
 import { connect } from "react-redux";
 import { useSelector, useDispatch } from "react-redux"; // 1. useSelector, useDispatch 가져오기
 import { getSession } from "../../redux/user/actions"; // 2. getSession 가져오기
@@ -73,7 +72,6 @@ const DiaryCard = () => {
   //======================================================
   useEffect(() => {
     axios.get("http://calac.cafe24app.com/diary/comments/count").then((res) => {
-      console.log("data",res)
       setCommentCnt(res.data);
     });
   }, [commentCnt]);
@@ -215,7 +213,7 @@ const DiaryCard = () => {
                       component='img'
                       width='40vh'
                       height='194'
-                      src='/images/logo.png'
+                      src='/img/logo.png'
                       alt='이미지'
                     />
                   )}
@@ -231,7 +229,7 @@ const DiaryCard = () => {
                     )}
                   </ContentBox>
                 </MyCardContent>
-                {/* <CommentBox>
+                <CommentBox>
                   {commentCnt.length !== 0 &&
                     commentCnt.map((count, idx) => {
                       return (
@@ -242,7 +240,7 @@ const DiaryCard = () => {
                         )
                       );
                     })}
-                </CommentBox> */}
+                </CommentBox>
               </Box>
             </CardListItem>
           );

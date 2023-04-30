@@ -4,11 +4,11 @@ import { ResponsivePie } from "@nivo/pie";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 
-const FinalncialLedgerDonut = () => {
+const LedgerDonut = () => {
   const [monthlyDonutData, setMonthlyDountData] = useState([]);
   //======================================================
   useEffect(() => {
-    axios.get("http://calac.cafe24app.com/ledger").then((res) => {
+    axios.get("http://calac.cafe24app.com/financialledger").then((res) => {
       setMonthlyDountData(res.data);
     });
   }, [monthlyDonutData]);
@@ -136,4 +136,4 @@ const DountTitle = styled(Typography)({
   marginBottom: "20px",
 });
 //======================================================
-export default FinalncialLedgerDonut;
+export default LedgerDonut;

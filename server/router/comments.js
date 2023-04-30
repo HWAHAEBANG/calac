@@ -61,7 +61,6 @@ router.get('/count',(req,res)=>{
     if(err) console.log("err",err);
     else{
       res.send(result);
-      console.log(result)
     }
   })
 })

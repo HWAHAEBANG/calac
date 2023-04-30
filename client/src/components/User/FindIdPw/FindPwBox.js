@@ -53,7 +53,7 @@ const FindPwBox = () => {
   const handleFindPw = () => {
     axios
       .get(
-        `http://calac.cafe24app.com/users/findPw?inputId=${identification.id}&inputQuiz=${identification.quiz}&inputAnswer=${identification.answer}`
+        `http://calac.cafe24app.com/login/findPw?inputId=${identification.id}&inputQuiz=${identification.quiz}&inputAnswer=${identification.answer}`
       )
       .then((response) => {
         if (response.data) {
@@ -76,7 +76,7 @@ const FindPwBox = () => {
   // 비밀번호 변경 ==============================
   const handleChangePw = () => {
     axios // 새 이벤트 DB에 UPDATE
-      .put(`http://calac.cafe24app.com/users/findPw/changePw`, {
+      .put(`http://calac.cafe24app.com/login/findPw/changePw`, {
         id: identification.id,
         newPwd: newPwd.pwd,
       })

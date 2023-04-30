@@ -5,13 +5,13 @@ import Weather from "../Main/Weather";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const TopStateBar = ({ hasSidCookie, session }) => {
+const TopBar = ({ hasSidCookie, session }) => {
   const pathname = window.location.pathname;
   const [money, setMoney] = useState(0);
   const [totalCountData, setTotalCountData] = useState(false);
   //======================================================
   useEffect(() => {
-    axios.get("http://calac.cafe24app.com/ledger/goal").then((res) => {
+    axios.get("http://calac.cafe24app.com/financialledger/goal").then((res) => {
       setMoney(res.data[0]["money_count"]);
     });
   }, []);
@@ -19,15 +19,15 @@ const TopStateBar = ({ hasSidCookie, session }) => {
   //======================================================
   useEffect(() => {
     axios
-      .get(`http://calac.cafe24app.com/ledger/monthly/total?type=expense`)
+      .get(`http://calac.cafe24app.com/financialledger/monthly/total?type=expense`)
       .then((res) => {
         res.data.length !== 0 && setTotalCountData(res.data[0]["sum_count"]);
       });
   }, []);
   //======================================================
-  const change_money = money
-    .toString()
-    .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+  // const change_money = money
+  //   .toString()
+  //   .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
   const minusGoal = money - totalCountData;
   //======================================================
   return (
@@ -67,7 +67,7 @@ const TopStateBar = ({ hasSidCookie, session }) => {
           <Box>
             <Text>이번달 지출 목표 금액</Text>
             <Text>
-              {change_money}
+              {/* {change_money} */}
               {minusGoal >= 0 ? (
                 <GoalCount sx={{ color: "blue" }}>
                   (-
@@ -122,4 +122,4 @@ const Text = styled("p")({
   fontSize: "16px",
 });
 //======================================================
-export default TopStateBar;
+export default TopBar;

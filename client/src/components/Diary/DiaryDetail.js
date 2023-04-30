@@ -138,7 +138,7 @@ const DiaryDetail = ({
           <TitleBox>
             <TitleSmallBox>
               <UserBox>
-                <Avatar alt='Remy Sharp' src='/images/avatar.png' />
+                <Avatar alt='Remy Sharp' src='/img/avatar.png' />
                 <UserTypography>{user}</UserTypography>
               </UserBox>
               <DialogTitle>{title}</DialogTitle>

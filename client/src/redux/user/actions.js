@@ -10,7 +10,7 @@ export const setHasSidCookie = (hasSidCookie) => ({
 export const getSession = () => (dispatch) => {
   if (!getCookie("sid")) return;
   axios
-    .get("http://calac.cafe24app.com/users/user-info", {
+    .get("http://calac.cafe24app.com/login/user-info", {
       // 브라우저에 저장되어있는 쿠키를 참조해서 권한 획득
       headers: {
         Authorization: `Bearer ${getCookie("sid")}`,

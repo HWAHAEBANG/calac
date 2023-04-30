@@ -51,7 +51,7 @@ const LoginInputBox = () => {
   const handleSubmit = () => {
     axios
       .post(
-        `http://calac.cafe24app.com/users/login`,
+        `http://calac.cafe24app.com/login`,
         {
           id: loginInfo.id,
           pwd: loginInfo.pwd,
