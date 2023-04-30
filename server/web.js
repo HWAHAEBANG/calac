@@ -55,7 +55,7 @@ app.use("/images", express.static(path.join(__dirname, "/images")));
 // app.listen(PORT, () => {
 //   console.log(`running on port ${PORT}`);
 // });
-https.createServer(app).listen(PORT, () => {
+http.createServer(app).listen(PORT, () => {
   console.log(`HTTP : running on port ${PORT}`);
 })
 https.createServer(options,app).listen(PORT, function() {
