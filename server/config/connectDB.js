@@ -6,8 +6,10 @@ const connectDB = {
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
+      // port: process.env.DB_PORT,
       database: process.env.DB_DATABASE,
-      multipleStatements: true,
+      // multipleStatements: true,
+      //===========================================
     });
   },
   open: (con) => {
@@ -31,3 +33,6 @@ const connectDB = {
 };
 
 module.exports = connectDB;
+
+//CLEARDB_DATABASE_URL
+//mysql://beb26cbad5827b:0ba2b98a@us-cdbr-east-06.cleardb.net/heroku_5f173ac1e1d2a1b?reconnect=true

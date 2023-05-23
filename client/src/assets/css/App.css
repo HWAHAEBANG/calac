@@ -1,0 +1,164 @@
+/* css reset */
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+/* =============================================== */
+.active {
+  background-color: #fff;
+  color: #333 !important;
+  padding: 10px 0;
+  border-radius: 30px;
+}
+/*scheduler category==============================*/
+.active2 {
+  background-color: #d9e7cb;
+  color: #333 !important;
+  padding: 10px 0;
+  border-radius: 5px;
+}
+
+/* ckEditor ====================================== */
+div.ck.ck-reset.ck-editor.ck-rounded-corners {
+  height: 285px !important;
+}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main {
+  height: 200px;
+}
+div.ck.ck-reset.ck-editor.ck-rounded-corners
+  > div.ck.ck-editor__main
+  > div
+  > p {
+  height: 200px;
+}
+
+/* kakomap component scrollbar custom =============================*/
+/*높이 설정을 여기서 해야지만 반영이 돼서 불가피하게 map전용 스크롤바를 만들었습니다.
+추후 방법을 찾으면 하나로 통합하는 방법을 찾아보겠습니다. -hhb*/
+/* 임의의 영역 생성 */
+.mapScrollBar {
+  height: 510px;
+  overflow-y: scroll;
+}
+
+/* 아래의 모든 코드는 영역::코드로 사용 */
+.mapScrollBar::-webkit-scrollbar {
+  width: 10px; /* 스크롤바의 너비 */
+}
+
+.mapScrollBar::-webkit-scrollbar-thumb {
+  height: 30%; /* 스크롤바의 길이 */
+  background: #07553b; /* 스크롤바의 색상 */
+
+  border-radius: 10px;
+}
+
+.mapScrollBar::-webkit-scrollbar-track {
+  background: rgba(33, 122, 244, 0.1); /*스크롤바 뒷 배경 색상*/
+}
+/*.==========================================*/
+/*.스케줄러 헤더 버튼 ========================*/
+.btn-primary {
+  background-color: #07553b !important;
+  border-color: #07553b !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.2);
+  color: #fff;
+}
+/*=================--========================*/
+.colorPickerVisible {
+  display: block;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
+.colorPickerInvisible {
+  display: none;
+  /* background-color: #07553b; */
+  /* transform: scale(2); */
+}
+.MuiBox-root.css-1vva2nt {
+  height: 240px;
+}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main {
+  height: 200px;
+}
+div.ck.ck-reset.ck-editor.ck-rounded-corners > div.ck.ck-editor__main > div {
+  height: 200px;
+}
+.MuiBox-root.css-11yd3ge > p,
+.MuiBox-root.css-11yd3ge > strong,
+.MuiBox-root.css-11yd3ge > i {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.MuiDialogContent-root > .MuiBox-root > div > figure > img {
+  width: 400px;
+}
+.MuiDialogContent-root > .MuiBox-root > div > p > img {
+  width: 400px;
+}
+/* MUI dialog ==================================== */
+.MuiDialog-paper.MuiDialog-paperScrollPaper.MuiDialog-paperWidthSm {
+  position: absolute;
+  top: 50%;
+  left: 57%;
+  transform: translate(-50%, -50%);
+}
