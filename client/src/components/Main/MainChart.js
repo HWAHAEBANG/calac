@@ -89,8 +89,9 @@ const MainChart = () => {
       <ChartRightBox>
         <RightTypography>최근 게시물</RightTypography>
         {diary.map((item, idx) => {
+          const isLastItem = idx === diary.length - 1;
           return (
-            <Box key={idx}>
+            <EntryBox key={idx} className='test'>
               <TitleBox>
                 <CircleIcon sx={{ fontSize: 5 }}/>
                 <TitleTypography>{item.title}</TitleTypography>
@@ -99,8 +100,9 @@ const MainChart = () => {
                 <Typography>{item.user_name}</Typography>
                 <Typography>{item.createdAt.substr(0,10)}</Typography>
               </DiaryBox>
-              <Divider/>
-            </Box> 
+              {isLastItem ? null : <RightDivider/>}
+              {/* <RightDivider/> */}
+            </EntryBox> 
           )
         })}
       </ChartRightBox>
@@ -120,6 +122,7 @@ const ChartLeftBox = styled(Box)({
 });
 const ChartRightBox = styled(Box)({
   width:'25%',
+  height: '85%',
   border : '1px solid #ddd',
   borderRadius:'20px',
   margin:'2.5%',
@@ -129,6 +132,11 @@ const RightTypography = styled(Typography)({
   fontWeight: 'bold',
   color: '#07553B',
   fontSize: '1rem',
+  height: '15%',
+  paddingTop: 10,
+});
+const EntryBox = styled(Box)({
+  height: '30%',
 });
 const TitleBox = styled(Box)({
   display: 'flex',
@@ -141,6 +149,11 @@ const TitleTypography = styled(Typography)({
 const DiaryBox = styled(Box)({
   display: 'flex',
   justifyContent: 'space-between',
+  height: '30%',
+});
+const RightDivider = styled(Divider)({
+  borderColor: '#333',
+  height: '30%',
 });
 //======================================================
 export default MainChart;
