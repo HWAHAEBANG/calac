@@ -75,7 +75,6 @@ export default function CategoryEditModal({
             </Typography>
           </Box>
           {/* list */}
-
           <CategoryEditModalList
             categoryList={categoryList}
             colorPickerVisible={colorPickerVisible}

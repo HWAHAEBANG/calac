@@ -5,13 +5,13 @@ import Weather from "../Main/Weather";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const TopBar = ({ hasSidCookie, session }) => {
+const TopBar = ({ isLoggedIn, userInfo }) => {
   const pathname = window.location.pathname;
   const [money, setMoney] = useState(0);
   const [totalCountData, setTotalCountData] = useState(false);
   //======================================================
   useEffect(() => {
-    axios.get("http://calac.cafe24app.com/financialledger/goal").then((res) => {
+    axios.get("http://localhost:5000/financialledger/goal").then((res) => {
       setMoney(res.data[0]["money_count"]);
     });
   }, []);
@@ -19,7 +19,7 @@ const TopBar = ({ hasSidCookie, session }) => {
   //======================================================
   useEffect(() => {
     axios
-      .get(`http://calac.cafe24app.com/financialledger/monthly/total?type=expense`)
+      .get(`http://localhost:5000/financialledger/monthly/total?type=expense`)
       .then((res) => {
         res.data.length !== 0 && setTotalCountData(res.data[0]["sum_count"]);
       });
@@ -36,15 +36,15 @@ const TopBar = ({ hasSidCookie, session }) => {
         <CommonTopState>
           <Weather />
           <Box>
-            {hasSidCookie ? (
+            {isLoggedIn.isLoggedIn ? (
               <Typography
                 variant='body1'
                 fontWeight={700}
                 color='primary'
                 textAlign='right'
               >
-                {/* 쿠키가 저장된 상태로 오류났다가 켜지면 쿠키는 있는데, 세션이 없어서 튕기는 오류 생김 */}
-                {session && session.userInfo && session.userInfo.name}님<br />
+                {userInfo && userInfo.userInfo && userInfo.userInfo.name}님
+                <br />
                 환영합니다!
               </Typography>
             ) : (

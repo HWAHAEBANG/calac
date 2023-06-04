@@ -16,9 +16,12 @@ import axios from "axios";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import NoPermissionBlock from "../common/NoPermissionBlock";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
-const DiaryModify = ({ isModify, setIsModify, diary_no, hasSidCookie }) => {
+const DiaryModify = ({ isModify, setIsModify, diary_no }) => {
+  // 뉴 리덕스 =========================================
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  // ==================================================
   //======================================================
   const [getTitle, setGetTitle] = useState("");
   const [getContent, setGetContent] = useState("");
@@ -46,7 +49,7 @@ const DiaryModify = ({ isModify, setIsModify, diary_no, hasSidCookie }) => {
   const modify = (no) => {
     let postTitle = newContent.title.length === 0 ? getTitle : newContent.title;
     axios
-      .post("http://calac.cafe24app.com/diary/modify", {
+      .post("http://localhost:5000/diary/modify", {
         no: no,
         newTitle: postTitle,
         newContent: newContent.content,
@@ -59,7 +62,7 @@ const DiaryModify = ({ isModify, setIsModify, diary_no, hasSidCookie }) => {
   //======================================================
   useEffect(() => {
     axios
-      .post("http://calac.cafe24app.com/diary/onePost", { no: diary_no })
+      .post("http://localhost:5000/diary/onePost", { no: diary_no })
       .then((res) => {
         setGetTitle(res.data[0].title);
         setGetContent(res.data[0].content);
@@ -105,7 +108,7 @@ const DiaryModify = ({ isModify, setIsModify, diary_no, hasSidCookie }) => {
               />
             </EditorBox>
           </MyDialogContent>
-          {hasSidCookie ? (
+          {isLoggedIn.isLoggedIn ? (
             <BtnBox>
               <ModifyButton
                 fullWidth
@@ -123,10 +126,7 @@ const DiaryModify = ({ isModify, setIsModify, diary_no, hasSidCookie }) => {
     </Box>
   );
 };
-// 리덕스 =================================================
-const mapStateToProps = (state) => ({
-  hasSidCookie: state.hasSidCookie,
-});
+
 //style=================================================
 const MyDialog = styled(Dialog)({});
 const DialogBox = styled(Box)({
@@ -161,4 +161,4 @@ const ModifyButton = styled(Button)({
   "&:hover": { backgroundColor: "#07553B", color: "#fff" },
 });
 //======================================================
-export default connect(mapStateToProps)(DiaryModify);
+export default DiaryModify;

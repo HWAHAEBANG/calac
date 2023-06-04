@@ -18,7 +18,6 @@ import EventAddModal from "./EventAddModal";
 import EventRender from "./EventRender";
 import AlertControl from "./AlertControl";
 import { useDispatch, useSelector } from "react-redux";
-import { getSession } from "../../redux/user/actions";
 
 const DemoApp = () => {
   // 상태관리 변수 ===============================================================================
@@ -29,27 +28,15 @@ const DemoApp = () => {
   const [alertEvents, setAlertEvents] = useState([]); // 알림이 설정되어 있는 이벤트들
   // 리덕스 =====================================================================================
   const dispatch = useDispatch();
-  const hasSidCookie = useSelector((state) => state.hasSidCookie);
-  const session = useSelector((state) => state.session);
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const userInfo = useSelector((state) => state.userInfo);
   // ===========================================================================================
-  // [데이터 불러오기] #################################################################################
-  // console.log("카테고리", categoryList);
-  // console.log("이벤트", currentEvents);
-  // console.log("쿠키", hasSidCookie);
-  // console.log("세션", session);
-  // 경고! 로그아웃해도 세션정보 남아있는 이슈 해결 요망
-
-  useEffect(() => {
-    // 세션 객체를 받아오는 함수 호출
-    dispatch(getSession());
-  }, [hasSidCookie]);
-
   // 카테고리 목록을 불러옴.
   useEffect(() => {
-    if (!hasSidCookie || !session || !session.userInfo) return; // 세션 이슈 해결하면 session으로 해도 될듯
+    if (!isLoggedIn || !userInfo || !userInfo.userInfo) return; // 세션 이슈 해결하면 session으로 해도 될듯
     axios
       .get(
-        `http://calac.cafe24app.com/scheduler/category?currentUserNo=${session.userInfo.no}`
+        `http://localhost:5000/scheduler/category?currentUserNo=${userInfo.userInfo.no}`
       )
       .then((response) => {
         setCategoryList(response.data);
@@ -59,14 +46,14 @@ const DemoApp = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [hasSidCookie]); // 세션 이슈 해결하면 session으로 해도 될듯
+  }, [isLoggedIn]); // 세션 이슈 해결하면 session으로 해도 될듯
 
   //이벤트 목록을 불러옴.
   useEffect(() => {
-    if (!hasSidCookie || !session || !session.userInfo) return;
+    if (!isLoggedIn || !userInfo || !userInfo.userInfo) return;
     axios
       .get(
-        `http://calac.cafe24app.com/scheduler?currentUserNo=${session.userInfo.no}`,
+        `http://localhost:5000/scheduler?currentUserNo=${userInfo.userInfo.no}`,
         { withCredentials: true }
       )
       .then((response) => {
@@ -125,7 +112,7 @@ const DemoApp = () => {
 
   // 새 이벤트 저장 =============================================================
   function handleModalSubmit() {
-    if (!hasSidCookie || !session || !session.userInfo) return;
+    if (!isLoggedIn || !userInfo || !userInfo.userInfo) return;
     const { title, start, end, color, locale } = newEvent;
     // Send POST request to server to add new event
     // 필수 입력사항 미입력시 경고.
@@ -143,14 +130,14 @@ const DemoApp = () => {
     // 새 이벤트 DB에 INSERT ======================================================
 
     axios
-      .post("http://calac.cafe24app.com/scheduler/insert", {
+      .post("http://localhost:5000/scheduler/insert", {
         // (주의) id값 전송안함. DB 저장시 바로 생성
         title,
         start,
         end,
         color,
         locale,
-        user_no: session.userInfo.no,
+        user_no: userInfo.userInfo.no,
       })
       .then((response) => {
         alert("등록 완료!");
@@ -238,7 +225,7 @@ const DemoApp = () => {
   // 이벤트의 날짜가 수정되었을 때, 저장 =========================================
   function handleEventChange(changeInfo) {
     axios // 새 이벤트 DB에 UPDATE
-      .put(`http://calac.cafe24app.com/scheduler/update/${changeInfo.event.id}`, {
+      .put(`http://localhost:5000/scheduler/update/${changeInfo.event.id}`, {
         title: changeInfo.event.title,
         start: changeInfo.event.startStr,
         end: changeInfo.event.endStr,
@@ -308,7 +295,7 @@ const DemoApp = () => {
       return;
     }
     axios // 새 이벤트 DB에 UPDATE
-      .put(`http://calac.cafe24app.com/scheduler/update/${updatedEvent.id}`, {
+      .put(`http://localhost:5000/scheduler/update/${updatedEvent.id}`, {
         title: title,
         start: start,
         end: end,
@@ -368,7 +355,7 @@ const DemoApp = () => {
       window.confirm(`'${updatedEvent.title}'일정을 완전히 삭제하시겠습니까?`)
     ) {
       axios // 새 이벤트 DB에 DELETE
-        .delete(`http://calac.cafe24app.com/scheduler/delete/${updatedEvent.id}`)
+        .delete(`http://localhost:5000/scheduler/delete/${updatedEvent.id}`)
         .then(() => {
           // 성공시 UI에도 바로 반영
           // Remove event from calendar
@@ -401,7 +388,7 @@ const DemoApp = () => {
   const [pickedAddColor, setPickedAddColor] = useState(""); // 추가할 카테고리의 최종 선택된 상테
   // 카테고리 추가 ==========================================================================
   const handleAddCategory = () => {
-    if (!hasSidCookie || !session || !session.userInfo) return;
+    if (!isLoggedIn || !userInfo || !userInfo.userInfo) return;
     if (!categoryText) {
       alert("카테고리명을 입력해주세요.");
       return;
@@ -412,10 +399,10 @@ const DemoApp = () => {
     }
 
     axios // DB에 INSERT
-      .post("http://calac.cafe24app.com/scheduler/category/insert", {
+      .post("http://localhost:5000/scheduler/category/insert", {
         value: pickedAddColor,
         label: categoryText,
-        user_no: session.userInfo.no,
+        user_no: userInfo.userInfo.no,
       })
       .then((response) => {
         alert("등록 완료!");
@@ -447,7 +434,7 @@ const DemoApp = () => {
       )
     ) {
       axios // DB에서 카테고리 DELETE
-        .delete(`http://calac.cafe24app.com/scheduler/category/delete/${option.id}`)
+        .delete(`http://localhost:5000/scheduler/category/delete/${option.id}`)
         .then(() => {
           // Remove event from calendar
           const test = categoryList.filter(
@@ -455,6 +442,7 @@ const DemoApp = () => {
             // 주의! DB에서 나온 id 데이터들은 정수형이고, 브라우저에서 추가될떄...
           );
           setCategoryList(test);
+          alert("카테고리 삭제 완료!");
         })
         .catch((error) => {
           console.error(error);
@@ -463,7 +451,7 @@ const DemoApp = () => {
           handleCloseDetail();
         });
 
-      const url = `http://calac.cafe24app.com/scheduler/event/color/delete/${encodeURIComponent(
+      const url = `http://localhost:5000/scheduler/event/color/delete/${encodeURIComponent(
         option.value
       )}`;
 
@@ -490,7 +478,7 @@ const DemoApp = () => {
   // 카테고리 색상변경 ==========================================================================
   const updateColor = (option) => {
     axios // DB에 카테고리 UPDATE
-      .put(`http://calac.cafe24app.com/scheduler/category/update/${option.id}`, {
+      .put(`http://localhost:5000/scheduler/category/update/${option.id}`, {
         value: pickedColor,
         label: option.label,
       })
@@ -516,7 +504,7 @@ const DemoApp = () => {
         console.error(error);
       });
 
-    const url = `http://calac.cafe24app.com/scheduler/event/color/update/${encodeURIComponent(
+    const url = `http://localhost:5000/scheduler/event/color/update/${encodeURIComponent(
       option.value
     )}`;
     axios // DB에 해당 카테고리를 가진 이벤드들 모두 UPDATE

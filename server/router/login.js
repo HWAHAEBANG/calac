@@ -3,33 +3,28 @@ const router = express.Router();
 const crypto = require("crypto");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+router.use(cookieParser());
+const FileStore = require("session-file-store")(session); // 매개변수로 session을 준다.
 
 // 인증 미들웨어 추가 ===========================
-router.use(cookieParser());
-const authMiddleware = (req, res, next) => {
-  if (req.cookies && req.cookies.sid) {
-    // 쿠키가 있는 경우 인증 성공
-    next();
-  } else {
-    // 쿠키가 없는 경우 로그인 페이지로 이동
-    res.redirect("/");
-  }
-};
+
 // =============================================
 //세션 생성 관련=================================
-const sessionMiddleware = session({
-  secret: "my-secret-key", // 세션을 암호화하는데 사용하는 문자열
-  resave: false, // 변경 사항이 없어도 항상 세션 저장
-  saveUninitialized: true, // 새로운 세션 생성 시에도 세션 저장
-  cookie: {
-    httpOnly: true,
-    // secure: true, // HTTPS 프로토콜에서만 사용 가능
-    secure: false, // HTTP 프로토콜로도 가능.
-    sameSite: "strict", // CSRF 공격 방지
-    maxAge: 1000 * 60 * 60 * 24, // 쿠키 유효기간 (1일)
-  },
-});
-router.use(sessionMiddleware);
+router.use(
+  session({
+    name: "session",
+    secret: process.env.SESSION_SECRET, // 세션을 암호화하는데 사용하는 문자열
+    resave: false, // 변경 사항이 없어도 항상 세션 저장
+    saveUninitialized: false, //true, 새로운 세션 생성 시에도 세션 저장
+    store: new FileStore(), // firestore 사용할 때 추가
+    cookie: {
+      httpOnly: false, //
+      secure: false, // true - HTTPS 프로토콜에서만 사용 가능 // false -http  도 가능
+      maxAge: 1000 * 60 * 60 * 24, // 쿠키 유효기간 (1일)
+      // sameSite: "strict", // CSRF 공격 방지
+    },
+  })
+);
 // =============================================
 // crypto 관련 =================================
 // 비밀번호를 해시화 하는 함수
@@ -57,15 +52,14 @@ connectDB.open(db);
 //로그인 =======================================
 router.post("/", (req, res) => {
   const user_id = req.body.id;
-  // const user_pwd = req.body.pwd;
+  const user_pwd = req.body.pwd;
   const sqlQuery = "SELECT * FROM users WHERE user_id = ?;";
-  if(!user_id) {
+  if (!user_id) {
     return res.status(400).json({
-      status : 'error',
-      error : 'req body cannot be empty'
+      status: "error",
+      error: "req body cannot be empty",
     });
   } else {
-
     db.query(sqlQuery, [user_id], (err, result) => {
       if (err) {
         console.log(err);
@@ -73,14 +67,14 @@ router.post("/", (req, res) => {
           .status(500)
           .json({ success: false, message: "Internal Server Error" });
       } else {
-        console.log("result",result)
+        console.log("result", result);
         if (!result[0]) {
           // 원하는 아이디를 찾지 못한 경우
           // (참고)(중요) : status가 200대가 아니면 무조건 catch로 가버린다.
           res.status(200).json({ success: false, message: "wrongId" });
         } else {
           const isAuthenticated = verifyPassword(
-            req.body.pwd,
+            user_pwd,
             result[0].user_hash,
             result[0].user_salt
           );
@@ -99,16 +93,26 @@ router.post("/", (req, res) => {
               createdAt: result[0].user_createdAt,
               updatedAt: result[0].user_updatedAt,
             };
-  
-            req.session.userInfo = userInfo; // 세션객체에 로그인 정보 저장
-            res.cookie("sid", req.sessionID, {
-              maxAge: 1000 * 60 * 60 * 24,
-              domain: "http://calac.cafe24app.com",
-            }); // 세션 ID를 브라우저에 sid쿠키로 저장
-            console.log(res.cookie)
-            // res.send(userInfo); //필요 없을 듯.?
-            res.status(200).json({ success: true, userInfo });
-            console.log("res : ",res.status)
+
+            //sesion 생성
+            req.session.save(() => {
+              req.session.userInfo = userInfo;
+              res
+                .status(200)
+                .json({ success: true, message: "correctPw", userInfo });
+            });
+
+            // req.session.userInfo = userInfo; // 세션객체에 로그인 정보 저장
+            // res.cookie("sid", user_id, {
+            // 세션 ID를 브라우저에 sid쿠키로 저장
+            // secure: false, // HTTPS를 사용하는 경우 true로 설정
+            // httpOnly: true,
+            // expires: null, // 또는 아래와 같이 설정
+            // expaires를 안쓰면 브라우저 세션과 동일한 기간
+            // });
+            // console.log(res.cookie);
+            // res.status(200).json({ success: true, userInfo });
+            // console.log("res : ", res.status);
           } else {
             // res.send("Login failed");
             res.status(200).json({ success: false, message: "wrongPw" });
@@ -117,6 +121,14 @@ router.post("/", (req, res) => {
       }
     });
   }
+});
+//===============================================
+// 로그아웃 ======================================
+router.post("/logout", (req, res) => {
+  //session destory
+  req.session.destroy(() => {
+    res.status(200).json({ message: "logout success" });
+  });
 });
 //===============================================
 // 세션 객체에서 현재 사용자 정보 받아오기 ========
@@ -162,25 +174,70 @@ router.post("/insert", (req, res) => {
       user_email,
     ],
     (err, result) => {
-      console.log(result);
-      if (err) {
-        console.log(err);
-      } else {
-        const newEvent = {
-          user_no: result.insertId, // Get the newly inserted id
-          user_id,
-          user_salt,
-          user_hash,
-          user_name,
-          user_birth,
-          user_gender,
-          user_phone,
-          user_quiz,
-          user_answer,
-          user_email,
-        };
-        res.send(newEvent);
-      }
+      if (err) console.log(err);
+
+      const newUser = {
+        user_no: result.insertId, // Get the newly inserted id
+        user_id,
+        user_salt,
+        user_hash,
+        user_name,
+        user_birth,
+        user_gender,
+        user_phone,
+        user_quiz,
+        user_answer,
+        user_email,
+      };
+
+      const sqlQueryCategory = `
+      INSERT INTO category_list (user_no, value, label)
+      VALUES 
+        (?, '#fff', '전체'),
+        (?, '#9DC08B', '개인'),
+        (?, '#40513B', '직장'),
+        (?, '#609966', '가족'),
+        (?, '#719192', '생일 및 기념일')
+    ;`;
+
+      db.query(
+        sqlQueryCategory,
+        [
+          newUser.user_no,
+          newUser.user_no,
+          newUser.user_no,
+          newUser.user_no,
+          newUser.user_no,
+        ],
+        (err, result) => {
+          if (err) return console.log(err);
+          console.log("기본 스케줄러 카테고리 부여 완료", result);
+        }
+      );
+
+      // 회원가입 기준 현재의 년월만 받아와서 샘플의 일, 시간과 연결해주기.
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+
+      const sqlQueryEventList = `
+      INSERT INTO event_list (user_no, title, start, end, color, locale) VALUES 
+      (?, '[샘플] 제주도 가족 여행', '${year}-${month}-08', '${year}-${month}-12', '#609966', '제주국제공항'),
+      (?, '[샘플] 어머니 생신', '${year}-${month}-09', '${year}-${month}-10', '#719192', NULL),
+      (?, '[샘플] 계열사 출장', '${year}-${month}-18T09:00:00+09:00', '${year}-${month}-18T18:00:00+09:00', '#40513B', '경기도판교테크노벨리'),
+      (?, '[샘플] 강의 신청기간', '${year}-${month}-17T08:00:00+09:00', '${year}-${month}-19T17:30:00+09:00', '#9DC08B', NULL);
+      `;
+
+      db.query(
+        sqlQueryEventList,
+        [newUser.user_no, newUser.user_no, newUser.user_no, newUser.user_no],
+        (err, result) => {
+          if (err) return console.log(err);
+          console.log("샘플 이벤트 부여 완료", result);
+        }
+      );
+
+      res.send(newUser);
     }
   );
 });

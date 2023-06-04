@@ -36,7 +36,7 @@ const DiaryMoreButton = ({ posts, id, open }) => {
   const onDelete = (id) => {
     if (window.confirm(`정말 삭제하시겠습니까?`) === true) {
       axios
-        .post("http://calac.cafe24app.com/diary/delete", {
+        .post("http://localhost:5000/diary/delete", {
           id: id,
         })
         .then(() => alert("삭제되었습니다 :)"));

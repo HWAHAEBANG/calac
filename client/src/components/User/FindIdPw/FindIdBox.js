@@ -29,7 +29,7 @@ const FindIdPwBox = () => {
   const handleFindId = () => {
     axios
       .get(
-        `http://calac.cafe24app.com/login/findId?name=${findIdInfo.name}&emailId=${findIdInfo.emailId}&emailDomains=${findIdInfo.emailDomains}`
+        `http://localhost:5000/login/findId?name=${findIdInfo.name}&emailId=${findIdInfo.emailId}&emailDomains=${findIdInfo.emailDomains}`
       )
       .then((response) => {
         if (response.data.length === 0) {

@@ -9,12 +9,20 @@ import {
   Typography,
 } from "@mui/material";
 import "../../assets/css/App.css";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import JoinRightRoundedIcon from "@mui/icons-material/JoinRightRounded";
-import { useCookies } from "react-cookie";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { clearUserInfoAction, logoutAction } from "../../redux";
 const Nav = () => {
-  const hasSidCookie = useSelector((state) => state.hasSidCookie);
+  // 뉴 리덕스 =========================================
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const userInfo = useSelector((state) => state.userInfo);
+
+  console.log("로그인 여부", isLoggedIn);
+  console.log("유저 정보", userInfo);
+  // ==================================================
   //=================================================================================
   const [btnActive, setBtnActive] = useState("");
   //=================================================================================
@@ -23,12 +31,18 @@ const Nav = () => {
     setBtnActive(true);
   };
 
-  ///
-  const [cookies, setCookie, removeCookie] = useCookies(["sid", "connect.sid"]);
-
   const handleLogout = () => {
-    removeCookie("sid", { path: "/" });
-    removeCookie("connect.sid", { path: "/" });
+    axios
+      .post(`http://localhost:5000/login/logout`, { withCredentials: true })
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(logoutAction());
+          dispatch(clearUserInfoAction(null));
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   //=================================================================================
   useEffect(() => {
@@ -140,7 +154,7 @@ const Nav = () => {
       </nav>
       <Box marginBottom={10} fontSize={30}>
         <nav>
-          {hasSidCookie ? (
+          {isLoggedIn.isLoggedIn ? (
             <List>
               <Link to='/'>
                 <ListItem onClick={handleLogout}>
@@ -170,7 +184,7 @@ const Nav = () => {
             </List>
           )}
 
-          {!hasSidCookie && (
+          {!isLoggedIn && (
             <Link to='/login/signup'>
               <Typography
                 sx={{ color: "#c1c1c1", textDecoration: "underline" }}

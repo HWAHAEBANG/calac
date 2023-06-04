@@ -20,28 +20,30 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
-const ChangeUserInfo = ({ hasSidCookie }) => {
-  //
+const ChangeUserInfo = () => {
+  // 뉴 리덕스 =========================================
+  const userInfo = useSelector((state) => state.userInfo);
+  // ==================================================
   const navigate = useNavigate();
 
   // 세션객체에서 받아오고, 수정되는 객체 상태 관리 ===================
+  const user = userInfo && userInfo.userInfo;
   const [sessionUserInfo, setSessionUserInfo] = useState({
-    id: "",
+    id: user?.id || "",
     pwd: "",
     pwdCheck: "",
-    name: "",
-    birth: "",
-    gender: "",
-    phone: "",
-    quiz: "",
-    answer: "",
-    emailId: "",
-    emailDomains: "",
-    no: "",
-    createdAt: "",
-    updatedAt: "",
+    name: user?.name || "",
+    birth: user?.birth || "",
+    gender: user?.gender || "",
+    phone: user?.phone || "",
+    quiz: user?.quiz || "",
+    answer: user?.answer || "",
+    emailId: user?.email?.split("@")[0] || "",
+    emailDomains: user?.email?.split("@")[1] || "",
+    createdAt: user?.createdAt || "",
+    updatedAt: user?.updatedAt || "",
   });
 
   const handleSessionUserInfo = (e) => {
@@ -50,50 +52,6 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
       [e.target.name]: e.target.value,
     });
   };
-  //=================================================================
-  // 브라우저에 저장된 쿠키를 받아오는 함수  =========================
-  function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(";").shift();
-  }
-  //=================================================================
-  //서버 세션객체에 저장되어 있는 정보를 가져옴 ========================
-  useEffect(() => {
-    if (!hasSidCookie) return;
-    axios
-      .get("http://calac.cafe24app.com/login/user-info", {
-        // 브라우저에 저장되어있는 쿠키를 참조해서 권한 획득
-        headers: {
-          Authorization: `Bearer ${getCookie("sid")}`,
-        },
-        // 서버와 포트가 달라 CORS를 사용했기 때문에 withCredentials 명시해야함.
-        //이 속성을 true로 설정하면 브라우저는 쿠키를 포함한 인증 정보를 서버에게 전달
-        withCredentials: true,
-      })
-      .then((response) => {
-        const { success, userInfo } = response.data;
-        // 성공적으로 유저 정보를 받아온 경우 : 객체에 저장.
-        if (success) {
-          const parseEmailId = userInfo.email && userInfo.email.split("@")[0];
-          const parseEmailDomains =
-            "@" + (userInfo.email && userInfo.email.split("@")[1]);
-
-          setSessionUserInfo((prev) => ({
-            ...prev,
-            ...userInfo,
-            emailId: parseEmailId,
-            emailDomains: parseEmailDomains,
-          }));
-        } else {
-          // 유저 정보가 없는 경우
-          // console.log("세션객체 Unauthorized"); //  success 아니면 error 갈듯.
-        }
-      })
-      .catch((error) => {
-        console.log(error); // 에러 발생 시 에러 메시지 출력
-      });
-  }, []);
   //=================================================================
   // 인증 상태값 관리 ================================================
   const [authInfo, setAuthInfo] = useState({ id: "", pwd: "" });
@@ -109,7 +67,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
   const handleSubmitAuthInfo = () => {
     axios
       .post(
-        `http://calac.cafe24app.com/login`,
+        `http://localhost:5000/login`,
         {
           id: authInfo.id,
           pwd: authInfo.pwd,
@@ -135,7 +93,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
   const handleSave = () => {
     axios
       .post(
-        `http://calac.cafe24app.com/login/changeUserInfo`,
+        `http://localhost:5000/login/changeUserInfo`,
         {
           id: sessionUserInfo.id,
           pwd: sessionUserInfo.pwd,
@@ -189,71 +147,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
   const allValuesNotEmptyExceptPwd = Object.entries(sessionUserInfo)
     .filter(([key]) => key !== "pwd" && key !== "pwdCheck")
     .every(([key, val]) => val !== "");
-  // 회원가입 정보 DB에 INSERT ========================================
-  const handleSubmit = () => {
-    if (!sessionUserInfo.notDuplicated) {
-      alert("아이디 중복을 확인해주세요.");
-      return;
-    }
-    if (sessionUserInfo.pwd !== sessionUserInfo.pwdCheck) {
-      alert("비밀번호가 일치하지 않습니다.");
-      return;
-    }
 
-    const {
-      id,
-      pwd,
-      name,
-      birth,
-      gender,
-      phone,
-      quiz,
-      answer,
-      emailId,
-      emailDomains,
-    } = sessionUserInfo;
-    axios
-      .post("http://calac.cafe24app.com/login/insert", {
-        id,
-        pwd,
-        name,
-        birth,
-        gender,
-        phone,
-        quiz,
-        answer,
-        emailId,
-        emailDomains,
-      })
-      .then((response) => {
-        if (
-          window.confirm(
-            `변경이 완료되었습니다. 메인화면으로 이동하시겠습니까?`
-          )
-        ) {
-          navigate("/");
-          setSessionUserInfo({
-            id: "",
-            pwd: "",
-            pwdCheck: "",
-            name: "",
-            birth: "",
-            gender: "",
-            phone: "",
-            quiz: "",
-            answer: "",
-            emailId: "",
-            emailDomains: "",
-          });
-        }
-      })
-      .catch(() => {
-        alert("가입 실패 관리자에게 문의하세요.");
-      })
-      .finally(() => {});
-  };
-
-  //============================================
   // 패스워드 UI 관련 ===========================
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -506,8 +400,7 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
             id='outlined-select-currency'
             select
             label='도메인'
-            defaultValue=''
-            value={sessionUserInfo && sessionUserInfo.emailDomains}
+            defaultValue={`@${sessionUserInfo && sessionUserInfo.emailDomains}`}
             fullWidth
             name='emailDomains'
             onChange={handleSessionUserInfo}
@@ -516,7 +409,11 @@ const ChangeUserInfo = ({ hasSidCookie }) => {
             disabled={unauthorized}
           >
             {EMAIL_DOMAINS.map((option, index) => (
-              <MenuItem key={index} value={option.value && option.value}>
+              <MenuItem
+                key={index}
+                value={option.value && option.value}
+                // 초기값과 일치하는 옵션에 selected 속성 추가
+              >
                 <Box display='flex' alignItems='center'>
                   <Typography>{option.label}</Typography>
                 </Box>
@@ -620,11 +517,4 @@ const SELECTQUIZ = [
   },
 ];
 //======================================================
-//리덕스================================================
-const mapStateToProps = (state) => {
-  return {
-    hasSidCookie: state.hasSidCookie,
-  };
-};
-//======================================================
-export default connect(mapStateToProps)(ChangeUserInfo);
+export default ChangeUserInfo;

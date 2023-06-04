@@ -7,6 +7,7 @@ import {
   SpeedDialIcon,
   styled,
   Switch,
+  Avatar,
   Typography,
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
@@ -16,9 +17,11 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import OutputIcon from "@mui/icons-material/Output";
 import QuizIcon from "@mui/icons-material/Quiz";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SettingsIcon from "@mui/icons-material/Settings";
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import colorPicker from "../../assets/images/colorPicker.png";
 
 export default function AlertControl({ alertEvents }) {
   const actions = [
@@ -36,9 +39,6 @@ export default function AlertControl({ alertEvents }) {
 
   const handleChoiceModal = (event) => {
     setOpenAlert((prev) => !prev);
-    // setCount(false);
-    // setDescription("");
-    // setChoiceModal(event);
   };
 
   const [pageCount, setPageCount] = useState(1);
@@ -102,14 +102,12 @@ export default function AlertControl({ alertEvents }) {
           left={pageCount === 1 ? "30px" : "-385px"}
           display='flex'
           justifyContent='space-between'
-          // bgcolor='grey'
           width='700px'
-          // className='mapScrollBar'
           height='80%'
           sx={{ transitionDuration: "0.5s", transitionProperty: "all" }}
         >
           <Box
-            /* bgcolor='red' */ width='280px'
+            width='280px'
             marginRight='20px'
             className='mapScrollBar'
             height='100%'
@@ -170,17 +168,47 @@ export default function AlertControl({ alertEvents }) {
           >
             <BoxSubject>카테고리</BoxSubject>
             <TypoTitle>카테고리별 일정 확인</TypoTitle>
-
-            <TypoTitle>카테고리 편집</TypoTitle>
-            <TypoTitle>새로운 카테고리 추가</TypoTitle>
+            <TypoContent>
+              좌측 상단의 카테고리 선택을 통해 카테코리별 일정을 확인하실 수
+              있습니다.
+            </TypoContent>
+            <TypoTitle>카테고리 편집 모달</TypoTitle>
+            <TypoContent>
+              좌측 상단의 <SettingsIcon />
+              버튼을 통해 카테고리를 추가 / 삭제 / 색상 변경하실 수 있습니다.
+            </TypoContent>
+            <TypoTitle>추가</TypoTitle>
             <Typography>
-              원하시는 기간을 드래그하면 일정 입력창이 나타납니다.
+              카테고리 편집 모달의 하단에 새로 만들 카테고리명을 입력하고,
+              <Avatar
+                alt='colorPicker'
+                src={colorPicker}
+                sx={{
+                  height: "20px",
+                  width: "20px",
+                }}
+              />
+              버튼을 통해 색상 선택 후 추가버튼을 눌러 새 카테고리를 생성하실 수
+              있습니다.
             </Typography>
             <TypoTitle>색상변경</TypoTitle>
             <Typography>
-              생성된 이벤트를 클릭하면 상세 내용을 볼 수 있습니다.
+              카테고리 편집 모달에서 변경하기 원하시는 카테고리의
+              <Avatar
+                alt='colorPicker'
+                src={colorPicker}
+                sx={{
+                  height: "20px",
+                  width: "20px",
+                }}
+              />
+              버튼을 눌러 색상을 변경하실 수 있습니다.
             </Typography>
             <TypoTitle>삭제</TypoTitle>
+            <Typography>
+              카테고리 편집 모달에서 삭제하기 원하시는 카테고리의 <DeleteIcon />
+              버튼을 눌러 삭제하실 수 있습니다.
+            </Typography>
           </Box>
         </Box>
         <Box
@@ -262,9 +290,6 @@ const TypoContent = styled(Typography)({
   fontSize: "14px",
   paddingLeft: "10px",
   paddingRight: "10px",
-  // color: "#07553b",
-  // fontWeight: "700",
-  // marginTop: "20px",
 });
 
 // ================================================

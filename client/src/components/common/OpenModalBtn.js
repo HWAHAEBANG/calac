@@ -85,7 +85,7 @@ const BottomLedgerButton = () => {
     if (choiceModal === "expense") {
       modalData.push({ choiceModal, expenseCategory, count, description });
       // console.log('expe', expenseCategory)
-      axios.post("http://calac.cafe24app.com/financialledger/insert", {
+      axios.post("http://localhost:5000/financialledger/insert", {
         category: modalData[0].expenseCategory,
         type: modalData[0].choiceModal,
         description: modalData[0].description,
@@ -94,7 +94,7 @@ const BottomLedgerButton = () => {
     } else {
       modalData.push({ choiceModal, incomeCategory, count, description });
       // console.log('inc', incomeCategory)
-      axios.post("http://calac.cafe24app.com/financialledger/insert", {
+      axios.post("http://localhost:5000/financialledger/insert", {
         category: modalData[0].incomeCategory,
         type: modalData[0].choiceModal,
         description: modalData[0].description,

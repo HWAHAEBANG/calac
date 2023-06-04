@@ -18,10 +18,7 @@ import {
 } from "@mui/material";
 import ReactHtmlParser from "react-html-parser";
 import axios from "axios";
-import NoPermissionBlock from "../common/NoPermissionBlock";
-import { connect } from "react-redux";
 import { useSelector, useDispatch } from "react-redux";
-import { getSession } from "../../redux/user/actions";
 
 const DiaryDetail = ({
   isDetailOpen,
@@ -39,9 +36,8 @@ const DiaryDetail = ({
   const [updateTime, setUpdateTime] = useState(false);
   const [countIdx, setCountIdx] = useState(0);
   //======================================================
-  const dispatch = useDispatch();
-  const hasSidCookie = useSelector((state) => state.hasSidCookie);
-  const session = useSelector((state) => state.session);
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const userInfo = useSelector((state) => state.userInfo);
   //======================================================
   const commentHandle = (e) => {
     const { value } = e.target;
@@ -60,17 +56,16 @@ const DiaryDetail = ({
   //======================================================
   const submitComment = (id) => {
     if (newComment.comment.length > 0) {
-      axios
-        .post("http://calac.cafe24app.com/diary/comments/insert", {
-          diary_no: id,
-          comment: newComment.comment,
-          user: session.userInfo.no,
-        })
-        .then(() => {
-          alert("댓글이 등록되었습니다 :)");
-          setNewComment({ comment: "" });
-        })
-        .catch((err) => console.log("err", err));
+      axios.post("http://localhost:5000/diary/comments/insert", {
+        diary_no: id,
+        comment: newComment.comment,
+        user: userInfo.userInfo.no,
+      })
+      .then(() => {
+        alert("댓글이 등록되었습니다 :)");
+        setNewComment({ comment: "" });
+      })
+      .catch((err) => console.log("err", err));
     } else {
       alert("댓글을 입력해주세요 :(");
     }
@@ -78,12 +73,11 @@ const DiaryDetail = ({
   //======================================================
   const commentDelete = (id) => {
     if (window.confirm(`정말 삭제하시겠습니까?`) === true) {
-      axios
-        .post("http://calac.cafe24app.com/diary/comments/delete", {
-          comment_no: id,
-        })
-        .then(() => alert("삭제되었습니다 :)"))
-        .catch((err) => console.log("err", err));
+      axios.post("http://localhost:5000/diary/comments/delete", {
+        comment_no: id,
+      })
+      .then(() => alert("삭제되었습니다 :)"))
+      .catch((err) => console.log("err", err));
     } else {
       alert("취소되었습니다 :)");
     }
@@ -98,15 +92,14 @@ const DiaryDetail = ({
       let sendComment =
         updateComment.comment.length === 0 ? comment : updateComment.comment;
       if (window.confirm(`정말 수정하시겠습니까?`) === true) {
-        axios
-          .post("http://calac.cafe24app.com/diary/comments/update", {
-            updateComment: sendComment,
-            comment_no: id,
-          })
-          .then(() => {
-            alert("수정되었습니다 :)");
-            setUpdateTime(true);
-          });
+        axios.post("http://localhost:5000/diary/comments/update", {
+          updateComment: sendComment,
+          comment_no: id,
+        })
+        .then(() => {
+          alert("수정되었습니다 :)");
+          setUpdateTime(true);
+        });
       } else {
         alert("취소되었습니다 :)");
       }
@@ -115,17 +108,13 @@ const DiaryDetail = ({
   //======================================================
   useEffect(() => {
     axios
-      .post("http://calac.cafe24app.com/diary/comments", {
+      .post("http://localhost:5000/diary/comments", {
         diary_no: id,
       })
       .then((res) => {
         setComments(res.data[0]);
       });
-  }, [comments]);
-  //======================================================
-  useEffect(() => {
-    dispatch(getSession());
-  }, [hasSidCookie]);
+  }, []);
   //======================================================
   return (
     <Box>
@@ -151,7 +140,7 @@ const DiaryDetail = ({
             </DetailBox>
             <DetailDivider />
             <CommentBox>
-              {!hasSidCookie ? (
+              {!isLoggedIn.isLoggedIn ? (
                 <CommentTextField
                   disabled
                   id='outlined-basic-disabled'
@@ -200,33 +189,30 @@ const DiaryDetail = ({
                         />
                       ) : updateTime ? (
                         <ListItemText
-                          primary={`${list.comment} (${list.user_id} ${new Date(
-                            list.updatedAt
-                          ).toLocaleString()})`}
+                          primary={`${list.comment} (${list.user_id} ${new Date(list.updatedAt).toLocaleString()})`}
                         />
                       ) : (
                         <ListItemText
-                          primary={`${list.comment} (${list.user_id} ${new Date(
-                            list.createdAt
-                          ).toLocaleString()})`}
+                          primary={`${list.comment} (${list.user_id} ${new Date(list.createdAt).toLocaleString()})`}
                         />
                       )}
-                      {hasSidCookie && session.userInfo.no === list.user_no && (
-                        <>
-                          <CommentUpdate
-                            onClick={() =>
-                              clickUpdateBtn(list.comment_no, list.comment)
-                            }
-                          >
-                            {isUpdate ? "수정" : "완료"}
-                          </CommentUpdate>
-                          <CommentDelete
-                            onClick={() => commentDelete(list.comment_no)}
-                          >
-                            삭제
-                          </CommentDelete>
-                        </>
-                      )}
+                      {isLoggedIn.isLoggedIn &&
+                        userInfo.userInfo.no === list.user_no && (
+                          <>
+                            <CommentUpdate
+                              onClick={() =>
+                                clickUpdateBtn(list.comment_no, list.comment)
+                              }
+                            >
+                              {isUpdate ? "수정" : "완료"}
+                            </CommentUpdate>
+                            <CommentDelete
+                              onClick={() => commentDelete(list.comment_no)}
+                            >
+                              삭제
+                            </CommentDelete>
+                          </>
+                        )}
                     </ListItem>
                   );
                 })}
@@ -238,10 +224,6 @@ const DiaryDetail = ({
     </Box>
   );
 };
-// 리덕스 =================================================
-const mapStateToProps = (state) => ({
-  hasSidCookie: state.hasSidCookie,
-});
 //style=================================================
 const MyDialog = styled(Dialog)({});
 const DialogBox = styled(Box)({
@@ -308,4 +290,4 @@ const CommentDelete = styled(Button)({
 });
 //======================================================
 
-export default connect(mapStateToProps)(DiaryDetail);
+export default DiaryDetail;

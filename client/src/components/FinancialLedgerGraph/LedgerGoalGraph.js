@@ -26,7 +26,7 @@ const LedgerGoalGraph = () => {
   const [noData, setNoData] = useState(false);
   //======================================================
   useEffect(() => {
-    axios.get("http://calac.cafe24app.com/financialledger/goal").then((res) => {
+    axios.get("http://localhost:5000/financialledger/goal").then((res) => {
       if (res.data.length === 0) {
         setNoData(true);
         setMonthlyGoalData(0);
@@ -44,7 +44,7 @@ const LedgerGoalGraph = () => {
   const type = "expense";
   useEffect(() => {
     axios
-      .get(`http://calac.cafe24app.com/financialledger/monthly/total?type=${type}`)
+      .get(`http://localhost:5000/financialledger/monthly/total?type=${type}`)
       .then((res) => {
         res.data.length !== 0 && setTotalCountData(res.data[0]["sum_count"]);
       });
@@ -68,7 +68,7 @@ const LedgerGoalGraph = () => {
   // 모달창 저장버튼
   const handleSave = () => {
     setOpen(false);
-    axios.put(`http://calac.cafe24app.com/financialledger/goal/update/${moneyNo}`, {
+    axios.put(`http://localhost:5000/financialledger/goal/update/${moneyNo}`, {
       count: changeGoalMoney,
       no: moneyNo,
     });
@@ -77,7 +77,7 @@ const LedgerGoalGraph = () => {
   //======================================================
   const handleSaveMoney = () => {
     setOpen(false);
-    axios.post("http://calac.cafe24app.com/financialledger/goal/insert", {
+    axios.post("http://localhost:5000/financialledger/goal/insert", {
       count: changeGoalMoney,
     });
   };

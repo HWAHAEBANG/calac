@@ -11,10 +11,10 @@ import NoPermissionBlock from "../common/NoPermissionBlock";
 import { useSelector } from "react-redux";
 
 const FinancialLedger = () => {
-  const hasSidCookie = useSelector((state) => state.hasSidCookie);
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
   return (
     <LedgerWrap>
-      {hasSidCookie ? (
+      {isLoggedIn.isLoggedIn ? (
         ""
       ) : (
         <NoPermissionBlock

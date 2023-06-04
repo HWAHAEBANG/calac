@@ -17,9 +17,16 @@ import { Link, useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { loginAction, setUserInfoAction } from "../../../redux";
 
 const LoginInputBox = () => {
   const navigate = useNavigate();
+
+  // 뉴 리덕스 =========================================
+  const dispatch = useDispatch();
+
+  // ==================================================
   // 비밀번호 UI =====================================
   const [showPassword, setShowPassword] = useState(false);
 
@@ -51,7 +58,7 @@ const LoginInputBox = () => {
   const handleSubmit = () => {
     axios
       .post(
-        `http://calac.cafe24app.com/login`,
+        `http://localhost:5000/login`,
         {
           id: loginInfo.id,
           pwd: loginInfo.pwd,
@@ -59,8 +66,13 @@ const LoginInputBox = () => {
         { withCredentials: true }
       )
       .then((response) => {
+        console.log("리스폰스", response);
+        console.log("데이타", response.data);
         const { success, message, userInfo } = response.data;
+        console.log("뭔데이개", userInfo);
         if (success) {
+          dispatch(loginAction());
+          dispatch(setUserInfoAction(userInfo));
           alert(`${userInfo.name}님, 환영합니다.`);
           navigate("/");
         } else {

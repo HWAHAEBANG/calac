@@ -2,7 +2,8 @@ import "./assets/css/App.css";
 import Home from "./components/common/Home";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import { persistor, store } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 function App() {
   // 로그아웃을 하지 않는 채 창을 닫으면, 현재 있는 세션의 기한을 바꿔 만료시켜버린다.=======
@@ -15,9 +16,11 @@ function App() {
 
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <Home />
-      </ThemeProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <Home />
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   );
 }

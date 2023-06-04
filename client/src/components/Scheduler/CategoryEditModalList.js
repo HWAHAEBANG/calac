@@ -51,7 +51,6 @@ export default function CategoryEditModalList({
                     "&:hover": {
                       transform: "scale(1.2)",
                     },
-                    // position: "absolute",
                     top: "0",
                     left: "0",
                   }}
@@ -76,7 +75,6 @@ export default function CategoryEditModalList({
                       cursor: "pointer",
                       "&:hover": {
                         transform: "scale(1.2)",
-                        // outline: "none",
                       },
                     }}
                     onClick={() => {
@@ -106,7 +104,6 @@ export default function CategoryEditModalList({
                       cursor: "pointer",
                       "&:hover": {
                         filter: "brightness(0.8)",
-                        // outline: "none",
                       },
                     }}
                     onClick={() => {
@@ -126,7 +123,6 @@ export default function CategoryEditModalList({
                     cursor: "pointer",
                     "&:hover": {
                       transform: "scale(1.2)",
-                      // outline: "none",
                     },
                   }}
                   onClick={() => onDeleteCategory(option)}

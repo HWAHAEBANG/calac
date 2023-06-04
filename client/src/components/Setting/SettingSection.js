@@ -6,16 +6,10 @@ import NoPermissionBlock from "../common/NoPermissionBlock";
 import { useSelector } from "react-redux";
 
 const Setting = () => {
-  const hasSidCookie = useSelector((state) => state.hasSidCookie);
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
   return (
     <FindWrap>
-      {hasSidCookie ? (
-        ""
-      ) : (
-        <NoPermissionBlock
-          menu='회원정보 설정 페이지'
-        />
-      )}
+      {isLoggedIn ? "" : <NoPermissionBlock menu='회원정보 설정 페이지' />}
       <ChangeUserInfo />
     </FindWrap>
   );

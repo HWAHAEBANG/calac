@@ -23,7 +23,6 @@ export default function CategoryEditModalInput({
           sx={{
             width: "10px",
             height: "10px",
-            // backgroundColor: "red",
             backgroundColor: pickedAddColor ? pickedAddColor : "#fff",
           }}
         ></Paper>
@@ -37,7 +36,6 @@ export default function CategoryEditModalInput({
         size='small'
         sx={{ marginBottom: "10px" }}
       ></TextField>
-      {/*  */}
       <Box position='relative'>
         <Avatar
           alt='colorPicker'
@@ -49,7 +47,6 @@ export default function CategoryEditModalInput({
             "&:hover": {
               transform: "scale(1.2)",
             },
-            // position: "absolute",
             top: "0",
             left: "0",
           }}
@@ -73,7 +70,6 @@ export default function CategoryEditModalInput({
               cursor: "pointer",
               "&:hover": {
                 transform: "scale(1.2)",
-                // outline: "none",
               },
             }}
             onClick={() => {
@@ -101,7 +97,6 @@ export default function CategoryEditModalInput({
               cursor: "pointer",
               "&:hover": {
                 filter: "brightness(0.8)",
-                // outline: "none",
               },
             }}
             onClick={() => {
@@ -112,7 +107,6 @@ export default function CategoryEditModalInput({
           </Paper>
         </Box>
       </Box>
-      {/*  */}
       <Button variant='contained' onClick={onAddCategory}>
         추가
       </Button>

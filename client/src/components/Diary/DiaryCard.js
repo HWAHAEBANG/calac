@@ -26,9 +26,7 @@ import DiaryDetail from "./DiaryDetail";
 import axios from "axios";
 import ReactHtmlParser from "react-html-parser";
 import DiaryModify from "./DiaryModify";
-import { connect } from "react-redux";
 import { useSelector, useDispatch } from "react-redux"; // 1. useSelector, useDispatch 가져오기
-import { getSession } from "../../redux/user/actions"; // 2. getSession 가져오기
 
 const DiaryCard = () => {
   const [openMoreButton, setOpenMoreButton] = useState(false);
@@ -46,12 +44,12 @@ const DiaryCard = () => {
   //======================================================
   const dispatch = useDispatch(); // 3. dispatch변수에 useDispatch() 함수 할당
   // 4. 쿠키 여부 상태가 저장되는 변수임. boolean타입을 반환함
-  const hasSidCookie = useSelector((state) => state.hasSidCookie);
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
   // 5. 세션 객체가 저장되는 변수임. 객체타입 {success: true userInfo: {no: 1 ...}} 을 반환함.
-  const session = useSelector((state) => state.session);
+  const userInfo = useSelector((state) => state.userInfo);
   //======================================================
   const handleOpenMoreButton = (e, idx) => {
-    if (session !== null) {
+    if (userInfo.userInfo !== null) {
       setCountIndex(idx);
       setOpenMoreButton(!openMoreButton);
       // setOpen(true);
@@ -71,15 +69,15 @@ const DiaryCard = () => {
   };
   //======================================================
   useEffect(() => {
-    axios.get("http://calac.cafe24app.com/diary/comments/count").then((res) => {
+    axios.get("http://localhost:5000/diary/comments/count").then((res) => {
       setCommentCnt(res.data);
     });
-  }, [commentCnt]);
+  }, []);
   //======================================================
   let offset = 0;
   const loadDiary = () => {
     axios
-      .post(`http://calac.cafe24app.com/diary?limit=10&offset=${offset}`)
+      .post(`http://localhost:5000/diary?limit=10&offset=${offset}`)
       .then((res) => {
         setPosts((oldPosts) => [...oldPosts, ...res.data]);
       });
@@ -96,7 +94,7 @@ const DiaryCard = () => {
   };
   //======================================================
   const handleClickOpen = (id, user) => {
-    if (session.userInfo.no !== user) {
+    if (userInfo.userInfo.no !== user) {
       alert("본인만 수정 가능합니다 :)");
     } else {
       setIsModify(true);
@@ -104,14 +102,14 @@ const DiaryCard = () => {
   };
   //======================================================
   const onDelete = (id, user) => {
-    if (!hasSidCookie) {
+    if (!isLoggedIn.isLoggedIn) {
       alert("삭제 권한이 없습니다. 로그인을 진행해주세요 :(");
-    } else if (session.userInfo.no !== user) {
+    } else if (userInfo.userInfo.no !== user) {
       alert("본인만 삭제 가능합니다 :) ");
     } else {
       if (window.confirm(`정말 삭제하시겠습니까?`) === true) {
         axios
-          .post("http://calac.cafe24app.com/diary/delete", {
+          .post("http://localhost:5000/diary/delete", {
             id: id,
           })
           .then(() => alert("삭제되었습니다 :)"));
@@ -126,12 +124,7 @@ const DiaryCard = () => {
     let listRange = document.getElementById("postList");
     listRange.addEventListener("scroll", handleScroll);
   }, []);
-  //======================================================
-  useEffect(() => {
-    // 6. 세션 객체를 받아오는 함수 호출
-    // 꼭 useEffect 안에 있어야하는 것은 아닙니다. 하지만 대부분의 경우 이렇게 사용될 듯 합니다.
-    dispatch(getSession());
-  }, [hasSidCookie]); // <= 이건 빈칸[]으로 두어도 상관 없는 듯 합니다. 혹시몰라 넣었습니다.
+
   //======================================================
   return (
     <CardBox>
@@ -205,7 +198,7 @@ const DiaryCard = () => {
                       component='img'
                       width='40vh'
                       height='194'
-                      src={`http://calac.cafe24app.com/images/diary/${list.image}`}
+                      src={`http://localhost:5000/images/diary/${list.image}`}
                       alt='이미지'
                     />
                   ) : (
@@ -261,10 +254,7 @@ const DiaryCard = () => {
     </CardBox>
   );
 };
-// 리덕스 =================================================
-const mapStateToProps = (state) => ({
-  hasSidCookie: state.hasSidCookie,
-});
+
 //style=================================================
 const CardBox = styled(Box)({
   height: "100%",
@@ -322,4 +312,4 @@ const ListItemButtonIcon = styled(ListItemButton)({
   padding: 0,
 });
 //======================================================
-export default connect(mapStateToProps)(DiaryCard);
+export default DiaryCard;

@@ -16,8 +16,6 @@ import Login from "./pages/User/Login";
 import Setting from "./pages/Setting/Setting";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import LedgerTotalSection from "./pages/FinancialLedgerTotal/FinancialLedgerTotal.js";
-import { Provider } from 'react-redux';
-import store from './redux/store'
 
 const router = createBrowserRouter([
   {
@@ -74,6 +72,6 @@ const router = createBrowserRouter([
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={router} store={store}/>);
+root.render(<RouterProvider router={router} />);
 
 reportWebVitals();

@@ -72,7 +72,7 @@ const AddLedgerModal = () => {
   const handleSave = () => {
     modalData.push({ choiceModal, category, count, description });
     setOpen(false);
-    axios.post("http://calac.cafe24app.com/financialledger/insert", {
+    axios.post("http://localhost:5000/financialledger/insert", {
       category: modalData[0].category,
       type: modalData[0].choiceModal,
       description: modalData[0].description,

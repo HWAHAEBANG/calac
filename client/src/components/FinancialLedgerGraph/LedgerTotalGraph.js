@@ -12,7 +12,7 @@ const LedgerTotalGraph = () => {
   useEffect(() => {
     let type = "income";
     axios
-      .get(`http://calac.cafe24app.com/financialledger/monthly/total?type=${type}`)
+      .get(`http://localhost:5000/financialledger/monthly/total?type=${type}`)
       .then((res) => {
         if (res.data.length === 0) {
           setNoData(true);
@@ -27,7 +27,7 @@ const LedgerTotalGraph = () => {
   useEffect(() => {
     let type = "expense";
     axios
-      .get(`http://calac.cafe24app.com/financialledger/monthly/total?type=${type}`)
+      .get(`http://localhost:5000/financialledger/monthly/total?type=${type}`)
       .then((res) => {
         if (res.data.length === 0) {
           setNoData(true);
@@ -57,9 +57,11 @@ const LedgerTotalGraph = () => {
       },
       colors: ["#164ef5"],
       labels: [
-        `이번달 수입 : ${totalIncome
-          .toString()
-          .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}`,
+        `이번달 수입 : ${
+          totalIncome
+            ?.toString?.()
+            .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") || "0"
+        }`,
       ],
     },
   };

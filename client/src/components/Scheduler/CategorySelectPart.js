@@ -23,10 +23,8 @@ export default function CategorySelectPart({
         defaultValue='EUR'
         fullWidth
         required
-        // helperText={!newEvent.color ? '"Category" is required.' : "Great!"}
         name='color'
         onChange={(e) => setCurrentCategory(e.target.value)}
-        // variant='standard'
         variant='outlined'
         size='small'
         value={currentCategory && currentCategory} // 필요 없는듯,..?

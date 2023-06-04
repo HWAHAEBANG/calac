@@ -4,6 +4,7 @@ const router = express.Router();
 const connectDB = require("../config/connectDB.js");
 const db = connectDB.init();
 connectDB.open(db);
+//==============================================
 // 이벤트 데이터 받아오기 =========================
 router.get("/", (req, res) => {
   const currentUserNo = req.query.currentUserNo;
@@ -13,7 +14,9 @@ router.get("/", (req, res) => {
     console.log("result", result);
   });
 });
+
 //==============================================
+// 이벤트 추가하기 ==============================
 router.post("/insert", (req, res) => {
   const title = req.body.title;
   const start = req.body.start;
@@ -43,6 +46,8 @@ router.post("/insert", (req, res) => {
     }
   );
 });
+
+// 이벤트 수정하기 (기간, 내용 모두 해당) =========
 //==============================================
 router.put("/update/:id", (req, res) => {
   const title = req.body.title;
@@ -69,8 +74,9 @@ router.put("/update/:id", (req, res) => {
     }
   });
 });
-//==============================================
 
+// 이벤트 삭제하기 ==============================
+//==============================================
 router.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
   const sqlQuery = `DELETE FROM event_list WHERE id = ${id};`;
@@ -83,6 +89,7 @@ router.delete("/delete/:id", (req, res) => {
   });
 });
 
+// 카테고리 목록 가져오기  =======================
 //==============================================
 router.get("/category", (req, res) => {
   const currentUserNo = req.query.currentUserNo;
@@ -96,7 +103,9 @@ router.get("/category", (req, res) => {
     }
   });
 });
-// //==============================================
+
+// 카테고리 추가하기 ============================
+//==============================================
 router.post("/category/insert", (req, res) => {
   const value = req.body.value;
   const label = req.body.label;
@@ -116,6 +125,8 @@ router.post("/category/insert", (req, res) => {
     }
   });
 });
+
+// 카테고리 색상 수정하기하기 ====================
 //==============================================
 router.put("/category/update/:id", (req, res) => {
   const value = req.body.value;
@@ -135,10 +146,12 @@ router.put("/category/update/:id", (req, res) => {
     }
   });
 });
+
+// 카테고리 삭제하기 ============================
 //==============================================
 router.delete("/category/delete/:id", (req, res) => {
   const id = req.params.id;
-  const sqlQuery = `DELETE FROM Category_list WHERE id = ${id};`;
+  const sqlQuery = `DELETE FROM category_list WHERE id = ${id};`;
   db.query(sqlQuery, (err, result) => {
     if (err) {
       console.log(err);
@@ -148,8 +161,8 @@ router.delete("/category/delete/:id", (req, res) => {
   });
 });
 
-//=====================================
-
+//=============================================
+// 카테고리 색상 수정할 때 해당 카테고리의 기존 이벤트들 색상도 바꿔주기 ==
 router.put("/event/color/update/:value", (req, res) => {
   const newvalue = req.body.color;
   const prevalue = req.params.value;
@@ -164,7 +177,7 @@ router.put("/event/color/update/:value", (req, res) => {
 });
 
 //====================================
-
+// 카테고리 색상 삭제할 때 해당 카테고리의 기존 이벤트들도 일괄 삭제하기 ==
 router.delete("/event/color/delete/:value", (req, res) => {
   const prevalue = req.params.value;
   const sqlQuery = `DELETE FROM event_list WHERE color = ?;`;

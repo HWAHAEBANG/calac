@@ -1,47 +1,58 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Divider, Typography } from "@mui/material";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import CircleIcon from '@mui/icons-material/Circle';
 import { styled } from "@mui/material/styles";
+import axios from "axios";
 
-const data = [
-  {
-    name: "식비",
-    "이번달": 25,
-    "저번달": 20,
-  },
-  {
-    name: "통신비",
-    "이번달": 15,
-    "저번달": 15,
-  },
-  {
-    name: "쇼핑",
-    "이번달": 10,
-    "저번달": 30,
-  },
-  {
-    name: "보험비",
-    "이번달": 20,
-    "저번달": 20,
-  },
-  {
-    name: "병원/약국",
-    "이번달": 2.5,
-    "저번달": 0,
-  },
-  {
-    name: "간식비",
-    "이번달": 5,
-    "저번달": 3,
-  },
-  {
-    name: "반려묘/견",
-    "이번달": 10,
-    "저번달": 7,
-  },
-];
 
 const MainChart = () => {
+  const data = [
+    {
+      name: "식비",
+      "이번달": 25,
+      "저번달": 20,
+    },
+    {
+      name: "통신비",
+      "이번달": 15,
+      "저번달": 15,
+    },
+    {
+      name: "쇼핑",
+      "이번달": 10,
+      "저번달": 30,
+    },
+    {
+      name: "보험비",
+      "이번달": 20,
+      "저번달": 20,
+    },
+    {
+      name: "병원/약국",
+      "이번달": 2.5,
+      "저번달": 0,
+    },
+    {
+      name: "간식비",
+      "이번달": 5,
+      "저번달": 3,
+    },
+    {
+      name: "반려묘/견",
+      "이번달": 10,
+      "저번달": 7,
+    },
+  ];
+  const [ diary, setDiary ] = useState([]);
+  // Dashboard 우측 상단 ===================================
+  useEffect(() => {
+    axios.post(`http://localhost:5000/diary?limit=3&offset=0`)
+    .then((res) => {
+      setDiary(res.data);
+    });
+  }, []);
+  //=======================================================
   return (
     <ChartWrap>
       <ChartLeftBox>
@@ -76,7 +87,22 @@ const MainChart = () => {
         </ResponsiveContainer>
       </ChartLeftBox>
       <ChartRightBox>
-        내용
+        <RightTypography>최근 게시물</RightTypography>
+        {diary.map((item, idx) => {
+          return (
+            <Box key={idx}>
+              <TitleBox>
+                <CircleIcon sx={{ fontSize: 5 }}/>
+                <TitleTypography>{item.title}</TitleTypography>
+              </TitleBox>
+              <DiaryBox>
+                <Typography>{item.user_name}</Typography>
+                <Typography>{item.createdAt.substr(0,10)}</Typography>
+              </DiaryBox>
+              <Divider/>
+            </Box> 
+          )
+        })}
       </ChartRightBox>
     </ChartWrap>
   );
@@ -98,6 +124,23 @@ const ChartRightBox = styled(Box)({
   borderRadius:'20px',
   margin:'2.5%',
   padding:'10px'
+});
+const RightTypography = styled(Typography)({
+  fontWeight: 'bold',
+  color: '#07553B',
+  fontSize: '1rem',
+});
+const TitleBox = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  paddingTop: 10,
+});
+const TitleTypography = styled(Typography)({
+  paddingLeft: 5,
+});
+const DiaryBox = styled(Box)({
+  display: 'flex',
+  justifyContent: 'space-between',
 });
 //======================================================
 export default MainChart;

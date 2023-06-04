@@ -7,7 +7,7 @@ import moment from "moment";
 import axios from "axios";
 import { useEffect } from "react";
 
-const MainCalendar = ({ hasSidCookie, session }) => {
+const MainCalendar = ({ isLoggedIn, userInfo }) => {
   const [value, onChange] = useState(new Date());
   //======================================================
   const now = new Date();
@@ -16,22 +16,6 @@ const MainCalendar = ({ hasSidCookie, session }) => {
   const date = now.getDate();
   const today = `${year}년 ${month}월 ${date}일 `;
 
-  //===========================
-  // 리덕스 =====================================================================================
-  //  const dispatch = useDispatch();
-  // const hasSidCookie = useSelector((state) => state.hasSidCookie);
-  // const session = useSelector((state) => state.session);
-  // ===========================================================================================
-  // [데이터 불러오기] ##########################################################################
-  // console.log("이벤트", currentEvents);
-  // console.log("쿠키", hasSidCookie);
-  // console.log("세션", session);
-  // 경고! 로그아웃해도 세션정보 남아있는 이슈 해결 요망
-
-  //  useEffect(() => {
-  //    // 세션 객체를 받아오는 함수 호출
-  //    dispatch(getSession());
-  //  }, [hasSidCookie]);
   const [parsedEventData, setParsedEventData] = useState([]);
 
   const parseEvents = (data) => {
@@ -45,10 +29,10 @@ const MainCalendar = ({ hasSidCookie, session }) => {
 
   //이벤트 목록을 불러옴.
   useEffect(() => {
-    if (!hasSidCookie || !session || !session.userInfo) return;
+    if (!isLoggedIn || !userInfo || !userInfo.userInfo) return;
     axios
       .get(
-        `http://calac.cafe24app.com/scheduler?currentUserNo=${session.userInfo.no}`,
+        `http://localhost:5000/scheduler?currentUserNo=${userInfo.userInfo.no}`,
         { withCredentials: true }
       )
       .then((response) => {
@@ -57,7 +41,7 @@ const MainCalendar = ({ hasSidCookie, session }) => {
       .catch((error) => {
         console.error(error);
       });
-  }, [hasSidCookie]);
+  }, [isLoggedIn]);
 
   const [selectedEvent, setSelectedEvent] = useState(null);
 

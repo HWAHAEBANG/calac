@@ -5,27 +5,21 @@ import MainChart from "./MainChart";
 import MainCalendar from "./MainCalendar";
 import MainMonthGoal from "./MainMonthGoal";
 import TopStateBar from "../common/TopBar";
-import { useSelector, useDispatch } from "react-redux";
-import { getSession } from "../../redux/user/actions";
+import { useSelector } from "react-redux";
 
 const MainSection = () => {
-  const dispatch = useDispatch();
-  const hasSidCookie = useSelector((state) => state.hasSidCookie);
-  const session = useSelector((state) => state.session);
-
-  useEffect(() => {
-    dispatch(getSession());
-  }, [hasSidCookie]);
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const userInfo = useSelector((state) => state.userInfo);
 
   return (
     <SectionWrap container>
       <SectionUpGrid item xs={12}>
-        <TopStateBar hasSidCookie={hasSidCookie} session={session} />
+        <TopStateBar isLoggedIn={isLoggedIn} userInfo={userInfo} />
         <MainChart />
       </SectionUpGrid>
       <FlexBox>
         <Grid item xs={6.5}>
-          <MainCalendar hasSidCookie={hasSidCookie} session={session} />
+          <MainCalendar isLoggedIn={isLoggedIn} userInfo={userInfo} />
         </Grid>
         <Divider orientation='vertical' flexItem />
         <Grid item xs={5.5}>
