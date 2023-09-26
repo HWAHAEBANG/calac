@@ -58,6 +58,9 @@ app.use(
   express.static("build")
 );
 
+app.use("/login/*", express.static("build"));
+app.use("/financialledger/*", express.static("build"));
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname, "/build/index.html");
 });
