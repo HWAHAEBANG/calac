@@ -8,7 +8,7 @@ const SchedulerSection = () => {
   const isLoggedIn = useSelector((state) => state.isLoggedIn);
   return (
     <Box height='100vh' padding={5} position='relative'>
-      {isLoggedIn ? "" : <NoPermissionBlock menu='스케줄러' />}
+      {isLoggedIn.isLoggedIn ? "" : <NoPermissionBlock menu='스케줄러' />}
       <FullCalendarLib />
     </Box>
   );

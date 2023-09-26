@@ -14,7 +14,6 @@ import Scheduler from "./pages/Scheduler/Scheduler";
 import SignUp from "./pages/User/SignUp";
 import Login from "./pages/User/Login";
 import Setting from "./pages/Setting/Setting";
-import ProtectedRoute from "./pages/ProtectedRoute";
 import LedgerTotalSection from "./pages/FinancialLedgerTotal/FinancialLedgerTotal.js";
 
 const router = createBrowserRouter([
@@ -58,9 +57,9 @@ const router = createBrowserRouter([
       {
         path: "/setting",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <Setting />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         ),
       },
       {

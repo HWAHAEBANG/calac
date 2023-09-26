@@ -3,8 +3,11 @@ import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import DiaryCard from "./DiaryCard";
 import WriteDiary from "./WriteDiary";
+import { useSelector } from 'react-redux';
+
 
 const FeedSection = () => {
+
   return (
     <MyBox>
       <Title>
