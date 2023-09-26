@@ -40,7 +40,7 @@ const LedgerWeeklyGraph = () => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:5000/financialledger/weekly?weeklyStartDay=${formattedDateArray[0]}&weeklyLastDay=${formattedDateArray[6]}`
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/weekly?weeklyStartDay=${formattedDateArray[0]}&weeklyLastDay=${formattedDateArray[6]}`
       )
       .then((res) => {
         if (res.data.length !== 0) {

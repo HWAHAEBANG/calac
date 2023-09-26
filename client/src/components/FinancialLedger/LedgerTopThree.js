@@ -30,7 +30,7 @@ const LedgerTopThree = () => {
   //======================================================
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/financialledger/monthly/total?type=${type}`)
+      .get(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/monthly/total?type=${type}`)
       .then((res) => {
         setTotalCountData(res.data[0]["sum_count"]);
       });
@@ -38,7 +38,7 @@ const LedgerTopThree = () => {
   //======================================================
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/financialledger/monthly/recent?type=${type}`)
+      .get(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/monthly/recent?type=${type}`)
       .then((res) => {
         setRecentThreeList(res.data);
         setRecentNum(res.data[0]["ledger_no"]);

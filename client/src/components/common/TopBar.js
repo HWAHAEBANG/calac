@@ -11,7 +11,7 @@ const TopBar = ({ isLoggedIn, userInfo }) => {
   const [totalCountData, setTotalCountData] = useState(false);
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:5000/financialledger/goal").then((res) => {
+    axios.get("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/goal").then((res) => {
       setMoney(res.data[0]["money_count"]);
     });
   }, []);
@@ -19,7 +19,7 @@ const TopBar = ({ isLoggedIn, userInfo }) => {
   //======================================================
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/financialledger/monthly/total?type=expense`)
+      .get(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/monthly/total?type=expense`)
       .then((res) => {
         res.data.length !== 0 && setTotalCountData(res.data[0]["sum_count"]);
       });

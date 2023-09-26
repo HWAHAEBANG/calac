@@ -58,7 +58,7 @@ const DiaryDetail = ({
   const submitComment = (id) => {
     if (newComment.comment.length > 0) {
       axios
-        .post("http://localhost:5000/diary/comments/insert", {
+        .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/comments/insert", {
           diary_no: id,
           comment: newComment.comment,
           user: userInfo.userInfo.no,
@@ -76,7 +76,7 @@ const DiaryDetail = ({
   const commentDelete = (id) => {
     if (window.confirm(`정말 삭제하시겠습니까?`) === true) {
       axios
-        .post("http://localhost:5000/diary/comments/delete", {
+        .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/comments/delete", {
           comment_no: id,
         })
         .then(() => alert("삭제되었습니다 :)"))
@@ -96,7 +96,7 @@ const DiaryDetail = ({
         updateComment.comment.length === 0 ? comment : updateComment.comment;
       if (window.confirm(`정말 수정하시겠습니까?`) === true) {
         axios
-          .post("http://localhost:5000/diary/comments/update", {
+          .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/comments/update", {
             updateComment: sendComment,
             comment_no: id,
           })
@@ -112,7 +112,7 @@ const DiaryDetail = ({
   //======================================================
   useEffect(() => {
     axios
-      .post("http://localhost:5000/diary/comments", {
+      .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/comments", {
         diary_no: id,
       })
       .then((res) => {

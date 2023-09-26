@@ -52,28 +52,39 @@ app.use(cookieParser());
 //   res.sendFile(path.join(__dirname, "./build", "./index.html"));
 // });
 app.use(express.static("build"));
+
+app.use(
+  /^\/(dashboard|financialledger|diary|comments|scheduler|login)/,
+  express.static("build")
+);
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname, "/build/index.html");
 });
 
+app.use(
+  /^\/(aboutUs|allCharts|myCharts|topicNews|notification)/,
+  express.static("build")
+);
+
 //==============================================
 const DASHBOARD = require("./router/main.js");
-app.use("/dashboard", DASHBOARD);
+app.use("/api/dashboard", DASHBOARD);
 
 const LEDGER = require("./router/financialledger.js");
-app.use("/financialledger", LEDGER);
+app.use("/api/financialledger", LEDGER);
 
 const DIARY = require("./router/diary.js");
-app.use("/diary", DIARY);
+app.use("/api/diary", DIARY);
 
 const COMMENTS = require("./router/comments.js");
-app.use("/comments", COMMENTS);
+app.use("/api/comments", COMMENTS);
 
 const SCHEDULER = require("./router/scheduler.js");
-app.use("/scheduler", sessionAuthMiddleware, SCHEDULER);
+app.use("/api/scheduler", sessionAuthMiddleware, SCHEDULER);
 
 const USERS = require("./router/login.js");
-app.use("/login", USERS);
+app.use("/api/login", USERS);
 
 // images 폴더 내의 파일들을 외부로 노출 시켜주기 위한 미들웨어
 app.use("/images", express.static(path.join(__dirname, "/images")));

@@ -67,7 +67,7 @@ const ChangeUserInfo = () => {
   const handleSubmitAuthInfo = () => {
     axios
       .post(
-        `http://localhost:5000/login`,
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login`,
         {
           id: authInfo.id,
           pwd: authInfo.pwd,
@@ -93,7 +93,7 @@ const ChangeUserInfo = () => {
   const handleSave = () => {
     axios
       .post(
-        `http://localhost:5000/login/changeUserInfo`,
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login/changeUserInfo`,
         {
           id: sessionUserInfo.id,
           pwd: sessionUserInfo.pwd,

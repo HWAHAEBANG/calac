@@ -33,7 +33,7 @@ const Nav = () => {
 
   const handleLogout = () => {
     axios
-      .post(`http://localhost:5000/login/logout`, { withCredentials: true })
+      .post(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login/logout`, { withCredentials: true })
       .then((response) => {
         if (response.status === 200) {
           dispatch(logoutAction());

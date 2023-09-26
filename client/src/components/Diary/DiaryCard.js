@@ -69,7 +69,7 @@ const DiaryCard = () => {
   };
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:5000/diary/comments/count").then((res) => {
+    axios.get("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/comments/count").then((res) => {
       setCommentCnt(res.data);
     });
   }, []);
@@ -77,7 +77,7 @@ const DiaryCard = () => {
   let offset = 0;
   const loadDiary = () => {
     axios
-      .post(`http://localhost:5000/diary?limit=10&offset=${offset}`)
+      .post(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary?limit=10&offset=${offset}`)
       .then((res) => {
         setPosts((oldPosts) => [...oldPosts, ...res.data]);
       });
@@ -109,7 +109,7 @@ const DiaryCard = () => {
     } else {
       if (window.confirm(`정말 삭제하시겠습니까?`) === true) {
         axios
-          .post("http://localhost:5000/diary/delete", {
+          .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/delete", {
             id: id,
           })
           .then(() => alert("삭제되었습니다 :)"));
@@ -198,7 +198,7 @@ const DiaryCard = () => {
                       component='img'
                       width='40vh'
                       height='194'
-                      src={`http://localhost:5000/images/diary/${list.image}`}
+                      src={`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/images/diary/${list.image}`}
                       alt='이미지'
                     />
                   ) : (

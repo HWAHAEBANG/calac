@@ -29,7 +29,7 @@ const FindIdPwBox = () => {
   const handleFindId = () => {
     axios
       .get(
-        `http://localhost:5000/login/findId?name=${findIdInfo.name}&emailId=${findIdInfo.emailId}&emailDomains=${findIdInfo.emailDomains}`
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login/findId?name=${findIdInfo.name}&emailId=${findIdInfo.emailId}&emailDomains=${findIdInfo.emailDomains}`
       )
       .then((response) => {
         if (response.data.length === 0) {

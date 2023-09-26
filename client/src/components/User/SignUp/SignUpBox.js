@@ -85,7 +85,7 @@ const SignUpSection = () => {
       emailDomains,
     } = signUpInfo;
     axios
-      .post("http://localhost:5000/login/insert", {
+      .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login/insert", {
         id,
         pwd,
         name,
@@ -130,7 +130,7 @@ const SignUpSection = () => {
   //아이디 중복확인 =============================
   const handleNotDuplicated = () => {
     axios
-      .get(`http://localhost:5000/login/duplicatedId?inputId=${signUpInfo.id}`)
+      .get(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login/duplicatedId?inputId=${signUpInfo.id}`)
       .then((response) => {
         if (response.data.length === 0) {
           alert("사용 가능한 아이디 입니다.");

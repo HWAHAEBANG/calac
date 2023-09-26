@@ -32,7 +32,7 @@ const MainCalendar = ({ isLoggedIn, userInfo }) => {
     if (!isLoggedIn || !userInfo || !userInfo.userInfo) return;
     axios
       .get(
-        `http://localhost:5000/scheduler?currentUserNo=${userInfo.userInfo.no}`,
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler?currentUserNo=${userInfo.userInfo.no}`,
         { withCredentials: true }
       )
       .then((response) => {

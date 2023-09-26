@@ -99,7 +99,7 @@ router.get("/category", (req, res) => {
       console.log(err);
     } else {
       res.send(result);
-      console.log(result);
+      console.log('카테고리',result);
     }
   });
 });

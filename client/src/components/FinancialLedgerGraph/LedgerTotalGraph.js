@@ -12,7 +12,7 @@ const LedgerTotalGraph = () => {
   useEffect(() => {
     let type = "income";
     axios
-      .get(`http://localhost:5000/financialledger/monthly/total?type=${type}`)
+      .get(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/monthly/total?type=${type}`)
       .then((res) => {
         if (res.data.length === 0) {
           setNoData(true);
@@ -27,7 +27,7 @@ const LedgerTotalGraph = () => {
   useEffect(() => {
     let type = "expense";
     axios
-      .get(`http://localhost:5000/financialledger/monthly/total?type=${type}`)
+      .get(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/monthly/total?type=${type}`)
       .then((res) => {
         if (res.data.length === 0) {
           setNoData(true);

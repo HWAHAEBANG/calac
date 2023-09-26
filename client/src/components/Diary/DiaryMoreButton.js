@@ -36,7 +36,7 @@ const DiaryMoreButton = ({ posts, id, open }) => {
   const onDelete = (id) => {
     if (window.confirm(`정말 삭제하시겠습니까?`) === true) {
       axios
-        .post("http://localhost:5000/diary/delete", {
+        .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/delete", {
           id: id,
         })
         .then(() => alert("삭제되었습니다 :)"));

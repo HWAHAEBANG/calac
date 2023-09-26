@@ -53,7 +53,7 @@ const FindPwBox = () => {
   const handleFindPw = () => {
     axios
       .get(
-        `http://localhost:5000/login/findPw?inputId=${identification.id}&inputQuiz=${identification.quiz}&inputAnswer=${identification.answer}`
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login/findPw?inputId=${identification.id}&inputQuiz=${identification.quiz}&inputAnswer=${identification.answer}`
       )
       .then((response) => {
         if (response.data) {
@@ -76,7 +76,7 @@ const FindPwBox = () => {
   // 비밀번호 변경 ==============================
   const handleChangePw = () => {
     axios // 새 이벤트 DB에 UPDATE
-      .put(`http://localhost:5000/login/findPw/changePw`, {
+      .put(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login/findPw/changePw`, {
         id: identification.id,
         newPwd: newPwd.pwd,
       })

@@ -58,7 +58,7 @@ const LoginInputBox = () => {
   const handleSubmit = () => {
     axios
       .post(
-        `http://localhost:5000/login`,
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/login`,
         {
           id: loginInfo.id,
           pwd: loginInfo.pwd,

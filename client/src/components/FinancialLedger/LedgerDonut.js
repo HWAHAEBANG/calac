@@ -8,7 +8,7 @@ const LedgerDonut = () => {
   const [monthlyDonutData, setMonthlyDountData] = useState([]);
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:5000/financialledger").then((res) => {
+    axios.get("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger").then((res) => {
       setMonthlyDountData(res.data);
     });
   }, [monthlyDonutData]);

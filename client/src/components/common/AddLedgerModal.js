@@ -72,7 +72,7 @@ const AddLedgerModal = () => {
   const handleSave = () => {
     modalData.push({ choiceModal, category, count, description });
     setOpen(false);
-    axios.post("http://localhost:5000/financialledger/insert", {
+    axios.post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/insert", {
       category: modalData[0].category,
       type: modalData[0].choiceModal,
       description: modalData[0].description,

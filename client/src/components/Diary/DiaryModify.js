@@ -49,7 +49,7 @@ const DiaryModify = ({ isModify, setIsModify, diary_no }) => {
   const modify = (no) => {
     let postTitle = newContent.title.length === 0 ? getTitle : newContent.title;
     axios
-      .post("http://localhost:5000/diary/modify", {
+      .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/modify", {
         no: no,
         newTitle: postTitle,
         newContent: newContent.content,
@@ -62,7 +62,7 @@ const DiaryModify = ({ isModify, setIsModify, diary_no }) => {
   //======================================================
   useEffect(() => {
     axios
-      .post("http://localhost:5000/diary/onePost", { no: diary_no })
+      .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/diary/onePost", { no: diary_no })
       .then((res) => {
         setGetTitle(res.data[0].title);
         setGetContent(res.data[0].content);

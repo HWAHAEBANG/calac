@@ -9,7 +9,7 @@ const LedgerGraphChart = () => {
   //======================================================
   useEffect(() => {
     axios
-      .get("http://localhost:5000/financialledger/monthly/category")
+      .get("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/financialledger/monthly/category")
       .then((res) => {
         setMonthlyData(res.data);
       });

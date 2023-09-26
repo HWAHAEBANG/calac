@@ -19,7 +19,7 @@ const MainMonthGoal = () => {
   };
   //======================================================
   useEffect(() => {
-    axios.get("http://localhost:5000/dashboard/goal").then((res) => {
+    axios.get("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/dashboard/goal").then((res) => {
       setGoalList(res.data);
     });
   }, []);

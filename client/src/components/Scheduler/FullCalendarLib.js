@@ -36,7 +36,8 @@ const DemoApp = () => {
     if (!isLoggedIn || !userInfo || !userInfo.userInfo) return; // 세션 이슈 해결하면 session으로 해도 될듯
     axios
       .get(
-        `http://localhost:5000/scheduler/category?currentUserNo=${userInfo.userInfo.no}`
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/category?currentUserNo=${userInfo.userInfo.no}`,
+        { withCredentials: true }
       )
       .then((response) => {
         setCategoryList(response.data);
@@ -53,7 +54,7 @@ const DemoApp = () => {
     if (!isLoggedIn || !userInfo || !userInfo.userInfo) return;
     axios
       .get(
-        `http://localhost:5000/scheduler?currentUserNo=${userInfo.userInfo.no}`,
+        `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler?currentUserNo=${userInfo.userInfo.no}`,
         { withCredentials: true }
       )
       .then((response) => {
@@ -130,7 +131,7 @@ const DemoApp = () => {
     // 새 이벤트 DB에 INSERT ======================================================
 
     axios
-      .post("http://localhost:5000/scheduler/insert", {
+      .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/insert", {
         // (주의) id값 전송안함. DB 저장시 바로 생성
         title,
         start,
@@ -138,7 +139,7 @@ const DemoApp = () => {
         color,
         locale,
         user_no: userInfo.userInfo.no,
-      })
+      },{ withCredentials: true })
       .then((response) => {
         alert("등록 완료!");
         // Add newly created event to calendar
@@ -225,13 +226,13 @@ const DemoApp = () => {
   // 이벤트의 날짜가 수정되었을 때, 저장 =========================================
   function handleEventChange(changeInfo) {
     axios // 새 이벤트 DB에 UPDATE
-      .put(`http://localhost:5000/scheduler/update/${changeInfo.event.id}`, {
+      .put(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/update/${changeInfo.event.id}`, {
         title: changeInfo.event.title,
         start: changeInfo.event.startStr,
         end: changeInfo.event.endStr,
         color: changeInfo.event.backgroundColor,
         locale: changeInfo.event.extendedProps.locale,
-      })
+      },{ withCredentials: true })
       .then((response) => {
         // 성공시 UI에도 바로 반영
         changeInfo.event.setDates(response.data.startStr, response.data.endStr); // 뭐지이건?
@@ -295,13 +296,13 @@ const DemoApp = () => {
       return;
     }
     axios // 새 이벤트 DB에 UPDATE
-      .put(`http://localhost:5000/scheduler/update/${updatedEvent.id}`, {
+      .put(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/update/${updatedEvent.id}`, {
         title: title,
         start: start,
         end: end,
         color: color,
         locale: locale,
-      })
+      },{ withCredentials: true })
       .then((response) => {
         // 성공시 UI에도 바로 반영
         setOpenEdit(false); // 일단 편집모달 닫기
@@ -355,7 +356,7 @@ const DemoApp = () => {
       window.confirm(`'${updatedEvent.title}'일정을 완전히 삭제하시겠습니까?`)
     ) {
       axios // 새 이벤트 DB에 DELETE
-        .delete(`http://localhost:5000/scheduler/delete/${updatedEvent.id}`)
+        .delete(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/delete/${updatedEvent.id}`,{ withCredentials: true })
         .then(() => {
           // 성공시 UI에도 바로 반영
           // Remove event from calendar
@@ -399,11 +400,11 @@ const DemoApp = () => {
     }
 
     axios // DB에 INSERT
-      .post("http://localhost:5000/scheduler/category/insert", {
+      .post("http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/category/insert", {
         value: pickedAddColor,
         label: categoryText,
         user_no: userInfo.userInfo.no,
-      })
+      },{ withCredentials: true })
       .then((response) => {
         alert("등록 완료!");
         // Add newly created event to calendar
@@ -434,7 +435,7 @@ const DemoApp = () => {
       )
     ) {
       axios // DB에서 카테고리 DELETE
-        .delete(`http://localhost:5000/scheduler/category/delete/${option.id}`)
+        .delete(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/category/delete/${option.id}`,{ withCredentials: true })
         .then(() => {
           // Remove event from calendar
           const test = categoryList.filter(
@@ -451,12 +452,12 @@ const DemoApp = () => {
           handleCloseDetail();
         });
 
-      const url = `http://localhost:5000/scheduler/event/color/delete/${encodeURIComponent(
+      const url = `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/event/color/delete/${encodeURIComponent(
         option.value
       )}`;
 
       axios // DB에서 해당 카테고리를 가진 이벤트도 모두 삭제
-        .delete(url)
+        .delete(url,{ withCredentials: true })
         .then(() => {
           // Remove event from calendar
           const test = currentEvents.filter(
@@ -478,10 +479,10 @@ const DemoApp = () => {
   // 카테고리 색상변경 ==========================================================================
   const updateColor = (option) => {
     axios // DB에 카테고리 UPDATE
-      .put(`http://localhost:5000/scheduler/category/update/${option.id}`, {
+      .put(`http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/category/update/${option.id}`, {
         value: pickedColor,
         label: option.label,
-      })
+      },{ withCredentials: true })
       .then((response) => {
         const test = categoryList.filter(
           (item) => item.id !== parseInt(option.id)
@@ -504,13 +505,13 @@ const DemoApp = () => {
         console.error(error);
       });
 
-    const url = `http://localhost:5000/scheduler/event/color/update/${encodeURIComponent(
+    const url = `http://calac-env.eba-pyefrphs.ap-northeast-2.elasticbeanstalk.com/api/scheduler/event/color/update/${encodeURIComponent(
       option.value
     )}`;
     axios // DB에 해당 카테고리를 가진 이벤드들 모두 UPDATE
       .put(url, {
         color: pickedColor,
-      })
+      },{ withCredentials: true })
       .then(() => {
         setCurrentEvents(
           currentEvents.map((event) => {
